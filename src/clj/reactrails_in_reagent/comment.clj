@@ -8,21 +8,16 @@
     [datomic.api :as d]
     [bidi.bidi :as bidi]
     [reactrails-in-reagent.handler.utils :as h-utils]
-    [reactrails-in-reagent.utils :refer [assoc-tempid]]
+    [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [com.rpl.specter :as specter]
     [ring.middleware.params :refer [wrap-params]]
 
-    [cojure.set]
+    [clojure.set]
     [clojure.pprint :as pp]
     ))
 
 ;; ----------------------------------------------------------------------------
 ;; generic comment handling
-(defn make-comment [author text]
-  {:comment/author author
-   :comment/text text
-   :comment/created (java.util.Date.)})
-
 
 (def all-comments '[:find [(pull ?e [*]) ...]
                     :where
@@ -136,7 +131,7 @@
   {(specter/multi-path :comments/comment-list
                        :comments/comment-entry)
    #(-> %
-        (h-utils/wrap-assoc-request :conn (-> handler-component :database :connection)
+        (wrap-assoc-request :conn (-> handler-component :database :connection)
                                     :routes (:routes-definition handler-component))
         (wrap-params)
         )})

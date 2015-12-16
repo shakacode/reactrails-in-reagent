@@ -10,6 +10,7 @@
 
     [ring.middleware.reload :refer [wrap-reload]]
     [ring.middleware.stacktrace :refer [wrap-stacktrace]]
+    [ring.middleware.resource :refer [wrap-resource]]
 
     [liberator.dev :refer [wrap-trace]])
   (:import (datomic Util)))
@@ -19,7 +20,8 @@
   (-> file-name io/resource io/reader Util/readAll first))
 
 
-(def middleware-dev (comp wrap-stacktrace
+(def middleware-dev (comp #(wrap-resource % "public")
+                          wrap-stacktrace
                           wrap-reload
                           #(wrap-trace % :header :ui)))
 

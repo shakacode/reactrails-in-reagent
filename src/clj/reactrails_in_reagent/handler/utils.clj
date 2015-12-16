@@ -22,26 +22,3 @@
 (defn get-handlers-prod []
   (deref-handlers @handlers))
 
-
-
-
-(defn hello-response [request]
-  {:status 200
-   :body   "Hello world! yo dude refresh"})
-
-(defn test-handler [request]
-  (if-let [db-conn (:conn request)]
-    (do (println db-conn)
-        {:status 200
-         :body   "yeah it works great please friend"})
-    "shoot not quite there yet"))
-
-
-(defn wrap-assoc-request [handler & kvs]
-  (fn [request]
-    (handler (apply assoc request kvs))))
-
-(defn wrap-dump-reg [handler]
-  (fn [request]
-    (pp/pprint request)
-    (handler request)))
