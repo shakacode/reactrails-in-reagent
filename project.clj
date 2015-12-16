@@ -13,6 +13,7 @@
                  [liberator "0.13"]
                  [ring/ring-core "1.4.0"]
                  [com.rpl/specter "0.9.0"]
+                 [prismatic/schema "1.0.4"]
 
                  ;[com.cognitect/transit-clj "0.8.281"]
                  ;[com.cognitect/transit-cljs "0.8.225"]

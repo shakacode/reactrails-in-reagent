@@ -24,6 +24,7 @@
 
 
 
+
 (defn hello-response [request]
   {:status 200
    :body   "Hello world! yo dude refresh"})
@@ -36,9 +37,9 @@
     "shoot not quite there yet"))
 
 
-(defn wrap-assoc-request [handler key value]
+(defn wrap-assoc-request [handler & kvs]
   (fn [request]
-    (handler (assoc request key value))))
+    (handler (apply assoc request kvs))))
 
 (defn wrap-dump-reg [handler]
   (fn [request]

@@ -10,7 +10,6 @@
 
     [ring.middleware.reload :refer [wrap-reload]]
     [ring.middleware.stacktrace :refer [wrap-stacktrace]]
-    [ring.middleware.params :refer [wrap-params]]
 
     [liberator.dev :refer [wrap-trace]])
   (:import (datomic Util)))
@@ -22,8 +21,7 @@
 
 (def middleware-dev (comp wrap-stacktrace
                           wrap-reload
-                          #(wrap-trace % :header :ui)
-                          wrap-params))
+                          #(wrap-trace % :header :ui)))
 
 
 (def dev-config {:db-uri "datomic:mem://example"
@@ -35,7 +33,6 @@
                                   (h-utils/get-handlers-dev)
                                   handler/make-transformations]})
 
-dev-config
 
 (defn make-system-map [config]
   (component/system-map

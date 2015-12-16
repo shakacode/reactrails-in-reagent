@@ -14,6 +14,10 @@
 
 (comment
 
+  (go)
+  (stop)
+
+
   (def db (-> system :db ))
 
   (d/q '[:find ?e
@@ -22,10 +26,5 @@
        (-> db :connection d/db))
 
   (d/pull (-> db :connection d/db) '[*] 17592186045425)
-
-  (go)
-
-
-  (stop)
 
   )
