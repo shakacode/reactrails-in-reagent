@@ -1,0 +1,25 @@
+[
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :comment/author
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Name of the person who comented."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :comment/text
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "Text of the comment."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :comment/created
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/doc "A comment's creation timestamp"
+  :db.install/_attribute :db.part/db}
+
+
+ ]
