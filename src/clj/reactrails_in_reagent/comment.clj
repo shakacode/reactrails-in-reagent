@@ -7,12 +7,13 @@
     [liberator.core :refer [resource]]
     [datomic.api :as d]
     [bidi.bidi :as bidi]
+    [reactrails-in-reagent.comment.schemas :refer [New-comment]]
     [reactrails-in-reagent.handler.utils :as h-utils]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [com.rpl.specter :as specter]
     [ring.middleware.params :refer [wrap-params]]
-
-    [clojure.set]
+    [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
+    [cheshire.core :as json]
     [clojure.pprint :as pp]
     ))
 
@@ -42,23 +43,23 @@
 ;; ----------------------------------------------------------------------------
 ;; Resources definition
 
-(s/defschema New-comment {(s/required-key :comment/author)  s/Str
-                          (s/required-key :comment/text) s/Str})
+
+(defn- proper-keys [c]
+  (clojure.set/rename-keys c {"author" :comment/author
+                              "text" :comment/text}))
 
 (def comment-params-coercer
   (coerce/coercer
     New-comment
     (fn [s]
       (if (= s New-comment)
-        #(clojure.set/rename-keys % {"author" :comment/author "text" :comment/text})))))
-
-
+        #(proper-keys %)))))
 
 (defn malformed-comment-list-params? [ctx]
   (let [request (:request ctx)
         method (:request-method request)]
     (case method
-      :post (let [comment (-> request :form-params comment-params-coercer)]
+      :post (let [comment (-> request :params comment-params-coercer)]
               (if-not (s-utils/error? comment)
                 [false {::comment comment}]
                 true))
@@ -67,7 +68,7 @@
 (defn response-comment-list [ctx]
   (let [conn (get-in ctx [:request :conn])
         comments (get-all-comments conn)]
-    (pr-str comments)))
+    comments))
 
 (defn post-comment! [ctx]
   (let [comment (::comment ctx)
@@ -80,7 +81,7 @@
     {:location (bidi/path-for routes :comments/comment-entry :id id)}))
 
 (def comment-list
-  (resource {:available-media-types ["text/plain"]
+  (resource {:available-media-types ["application/json"]
              :allowed-methods [:post :get]
              :malformed? malformed-comment-list-params?
              :handle-ok response-comment-list
@@ -108,11 +109,11 @@
   (let [conn (get-in  ctx [:request :conn])
         {id :id} (:checked-params ctx)
         comment (get-comment id conn)]
-    (pr-str comment)))
+    comment))
 
 
 (def comment-entry
-  (resource {:available-media-types ["text/plain"]
+  (resource {:available-media-types ["application/json"]
              :malformed?            malformed-comment-entry-params?
              :handle-ok             response-comment-entry}))
 
@@ -134,4 +135,5 @@
         (wrap-assoc-request :conn (-> handler-component :database :connection)
                                     :routes (:routes-definition handler-component))
         (wrap-params)
+        (wrap-json-params)
         )})

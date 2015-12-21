@@ -6,7 +6,7 @@
   (fn [request]
     (handler (apply assoc request kvs))))
 
-(defn wrap-dump-reg [handler]
+(defn wrap-dump-req [handler]
   (fn [request]
     (pp/pprint request)
     (handler request)))

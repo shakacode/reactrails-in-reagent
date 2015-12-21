@@ -1,7 +1,7 @@
 (ns reactrails-in-reagent.handler
   (:require
     [reactrails-in-reagent.handler.utils :as h-utils]
-    [reactrails-in-reagent.handler.middleware :refer [wrap-dump-reg]]
+    [reactrails-in-reagent.handler.middleware :refer [wrap-dump-req]]
     [reactrails-in-reagent.comment :as comments]
     [com.rpl.specter :as s]
     [bidi.bidi :as bidi]
@@ -35,7 +35,7 @@
 
 (defn make-transforms [handler-component]
   {
-   :test (comp wrap-dump-reg wrap-print-body)
+   :test (comp wrap-dump-req wrap-print-body)
    })
 
 
