@@ -3,8 +3,8 @@
     [reactrails-in-reagent.handler.utils :as h-utils]
     [reactrails-in-reagent.handler.middleware :refer [wrap-dump-req]]
     [reactrails-in-reagent.comment :as comments]
+    [reactrails-in-reagent.routes :as routes]
     [com.rpl.specter :as s]
-    [bidi.bidi :as bidi]
     [bidi.ring]
     [ring.middleware.params :refer [wrap-params]]
     [ring.util.response :refer [resource-response]]
@@ -13,52 +13,24 @@
     [clojure.pprint :as pp]
     ))
 
-(def routes ["" [[(bidi/alts "" "/") :index]
-                 comments/routes
-                 ["/test" :test]
-                 [true :miss-404]]])
-
-
-(defn hello-response [request]
-  (assoc (resource-response (str "html/test.html") {:root "public"})
-    :headers {"Content-Type" "text/html"}))
-
-(h-utils/register-handler! :test hello-response)
-
-(defn wrap-print-body [handler]
-  (fn
-    [request]
-    (if-let [stream (-> request :body)]
-      (let [body (slurp stream)]
-        (println body)))
-    (handler request)))
-
-(defn make-transforms [handler-component]
-  {
-   :test (comp wrap-dump-req wrap-print-body)
-   })
-
-
-
 
 (defn index [_]
   (println "gone there to index")
   (assoc (resource-response (str "html/index.html") {:root "public"})
     :headers {"Content-Type" "text/html"}))
 
-(h-utils/register-handler! :index index)
-
-
-(defn miss-404 [_]
-  (println "missed")
+(defn miss-404 [request]
+  (println "missed requested uri" (:uri request))
   (assoc (resource-response (str "html/404.html") {:root "public"})
     :headers {"Content-Type" "text/html"}))
 
-(h-utils/register-handler! :miss-404 miss-404)
+
+(h-utils/register-handler! 'index index)
+(h-utils/register-handler! 'miss-404 miss-404)
+
 
 (defn make-transformations [handler-component]
   (merge {}
-         (make-transforms handler-component)
          (comments/make-transformations handler-component)))
 
 (defn apply-transformations
@@ -68,19 +40,12 @@
                (s/transform path transformation res))
              spector-selector->route transforms))
 
-(defn inject-handlers
-  "Walks the routes datastructure and replaces ids for handlers with
-  the actual handler."
-  [routes-def handlers]
-  (s/transform (s/walker keyword?)
-               (fn [value] (get handlers value value))
-               routes-def))
 
 (defn prepare-routes
   "Transforms the actuals handlers and injects them into the
   datastructure representing the routes."
   [routes handlers transformations]
-  (inject-handlers routes
+  (routes/inject-handlers routes
                    (apply-transformations transformations handlers )))
 
 (defn compute-handler

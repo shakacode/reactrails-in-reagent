@@ -4,6 +4,8 @@
     [reactrails-in-reagent.server :as server]
     [reactrails-in-reagent.handler :as handler]
     [reactrails-in-reagent.handler.utils :as h-utils]
+    [reactrails-in-reagent.routes :refer [routes]]
+
 
     [com.stuartsierra.component :as component]
     [clojure.java.io :as io]
@@ -41,7 +43,7 @@
                  :seed-data (read-edn-ressource "data/seed.edn")
                  :server-config {:port 8080}
                  :middleware middleware-dev
-                 :handler-config [handler/routes
+                 :handler-config [routes
                                   (h-utils/get-handlers-dev)
                                   handler/make-transformations]})
 

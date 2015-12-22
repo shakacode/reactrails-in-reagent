@@ -2,6 +2,8 @@
   (:require
     [schema.core :as s :include-macros true]
     [schema.coerce :as coerce]
+    [bidi.bidi :as bidi]
+    [reactrails-in-reagent.routes :refer [routes]]
     [reactrails-in-reagent.comment.schemas :refer [New-comment]]
     [cljs.core.async :as async]
     [clojure.set])
@@ -41,37 +43,37 @@
 
 
 
+(def comment-list-route (bidi/path-for routes 'comments/comment-list))
 
 (defn send-new-comment! [c cb]
-  (let [json-comment (clj->JSON c)]
-    (.send XhrIo "/comments"
-           (fn [_]
-             (this-as this
-               (let [r (.getResponseText this)
-                     clj-r (JSON->clj r)
-                     coerced (comment-coercer clj-r)]
-                 (println coerced)
-                 (cb coerced))))
-           "POST"
-           (clj->JSON c)
-           #js {"Content-Type" "application/json"})))
+  (.send XhrIo comment-list-route
+         (fn [_]
+           (this-as this
+             (let [r (.getResponseText this)
+                   clj-r (JSON->clj r)
+                   coerced (comment-coercer clj-r)]
+               (println coerced)
+               (cb coerced))))
+         "POST"
+         (clj->JSON c)
+         #js {"Content-Type" "application/json"}))
 
 
 (defn get-all-comments! [cb]
-  (.send XhrIo "/comments"
+  (.send XhrIo comment-list-route
          (fn [_]
            (this-as this
              (let [r (.getResponseText this)
                    clj-r (JSON->clj r)
                    coerced (map comment-coercer clj-r)]
-               (cb coerced)))))
-  (println "sent"))
+               (cb coerced))))))
 
 
 (defn result-in-channel [f]
   (let [channel-res (async/chan)]
-    [channel-res
-     (fn [res]
-       (-> channel-res
-           (async/put! (f res))
-           (async/close!)))]))
+    [channel-res (fn [res]
+                   (async/put! channel-res (f res))
+                   (async/close! channel-res))]))
+
+
+

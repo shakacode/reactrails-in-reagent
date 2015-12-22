@@ -13,7 +13,6 @@
     [com.rpl.specter :as specter]
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
-    [cheshire.core :as json]
     [clojure.pprint :as pp]
     ))
 
@@ -121,16 +120,14 @@
 ;; ----------------------------------------------------------------------------
 ;; Routes definition
 
-(def routes  ["/comments" {(bidi/alts "" "/") :comments/comment-list
-                           ["/" :id] :comments/comment-entry}])
 
-(h-utils/register-handler! :comments/comment-list comment-list)
-(h-utils/register-handler! :comments/comment-entry comment-entry)
+(h-utils/register-handler! 'comments/comment-list comment-list)
+(h-utils/register-handler! 'comments/comment-entry comment-entry)
 
 
 (defn make-transformations [handler-component]
-  {(specter/multi-path :comments/comment-list
-                       :comments/comment-entry)
+  {(specter/multi-path 'comments/comment-list
+                       'comments/comment-entry)
    #(-> %
         (wrap-assoc-request :conn (-> handler-component :database :connection)
                                     :routes (:routes-definition handler-component))
