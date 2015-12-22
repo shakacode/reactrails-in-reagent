@@ -22,8 +22,6 @@
                  [com.stuartsierra/component "0.2.3"]
                  [cheshire "5.5.0"]
 
-                 [petrol "0.1.0"]
-
                  [figwheel-sidecar "0.5.0"]
 
                  ]
