@@ -16,7 +16,6 @@
             :value "send"
             :on-click (fn [e]
                         (.preventDefault e)
-                        (println "been there")
                         (d/dispatch! (actions/->NewComment @doc)))}]])
 
 (defn form []
@@ -32,13 +31,15 @@
 
 (defn comment-entry [c]
   [:li {:key (:db/id c)}
-   [:p (:comment/author c)]
-   [:p (:comment/text c)]])
+   [:p "id: " (:db/id c)]
+   [:p "author: " (:comment/author c)]
+   [:p "text: " (:comment/text c)]
+   [:p "created: " (-> c :comment/created str)]])
 
 (defn comments [comments-list]
   [:ul
    (for [c @comments-list]
-     [comment-entry c])])
+     (comment-entry c))])
 
 
 (defn app [app-state]

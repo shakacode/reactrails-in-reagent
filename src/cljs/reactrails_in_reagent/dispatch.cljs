@@ -37,15 +37,12 @@
 
 
 (defn- remove-closed-channel! [c]
-  (println "removing channel")
   (swap! !dispatch-state update :channels #(disj % c)))
 
 (defn- apply-message-consequence! [!app-db m]
-  (println "applyong message")
   (swap! !app-db process-message m))
 
 (defn- add-event-source! [source]
-  (println "adding event source")
   (swap! !dispatch-state update :channels #(set/union % (watch-channels source))))
 
 (defn start-dispatcher! [!app-db]
@@ -57,9 +54,8 @@
     ; start dispatch loop
     (go-loop
       []
-      (println "enter the loop")
       (when-let [channels (-> !dispatch-state deref :channels seq)]
-        (println "apparently we got channels")
+
         (let [[message channel] (async/alts! channels)]
           (cond
             (nil? message)
@@ -76,49 +72,5 @@
 (defn dispatch! [message]
   (async/put! (:dispatch-channel @!dispatch-state) message))
 
-
-
-(comment
-
-  (def app (atom 0))
-
-  (def app-history (atom []))
-
-  (add-watch app :toto (fn [& args] (swap! app-history conj  args)))
-
-
-
-  (defrecord Inc []
-    Message
-    (process-message* [this app]
-      (inc app)))
-
-  (defrecord IncLater []
-    EventSource
-    (watch-channels [this]
-      (let [channel-respone (go (->Inc))]
-        #{channel-respone})))
-
-
-  (start-dispatcher! app)
-
-
-  @app
-
-  @app-history
-
-  @!dispatch-state
-
-
-
-  (dispatch! (->Inc))
-
-  (dispatch! (->IncLater))
-
-
-
-
-
-  )
 
 
