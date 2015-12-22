@@ -12,9 +12,19 @@
     [ring.middleware.stacktrace :refer [wrap-stacktrace]]
     [ring.middleware.resource :refer [wrap-resource]]
 
+    [liberator.representation]
+    [cheshire.core :refer [generate-string]]
+
     [liberator.dev :refer [wrap-trace]])
   (:import (datomic Util)))
 
+
+;; patching liberator to use cheshire
+(defmethod liberator.representation/render-map-generic "application/json" [data context]
+  (generate-string data))
+
+(defmethod liberator.representation/render-seq-generic "application/json" [data context]
+  (generate-string data))
 
 (defn read-edn-ressource [file-name]
   (-> file-name io/resource io/reader Util/readAll first))
