@@ -3,6 +3,8 @@
     [datomic.api :as d]
     [com.stuartsierra.component :as component]))
 
+
+
 (defrecord DatomicDatabase [uri connection]
   component/Lifecycle
   (start [component]
@@ -20,15 +22,15 @@
   (DatomicDatabase. db-uri nil))
 
 
+;; ---------------------------------------------------------------------------
 
-
-(defrecord DatomicSchemaInstaller [schema conn]
+(defrecord DatomicSchemaInstaller [schema database]
   component/Lifecycle
   (start [component]
     (if (:started? component)
       component
       (do (println "instaling schema")
-          @(d/transact (-> component :conn :connection) schema)
+          @(d/transact (-> component :database :connection) schema)
           (assoc component :started? true))))
   (stop [component]
     (dissoc component :started?)))
@@ -36,6 +38,9 @@
 (defn make-schema-installer [schema]
   (DatomicSchemaInstaller. schema nil))
 
+
+
+;; ---------------------------------------------------------------------------
 
 (defn start-datomic-seeder [seeder]
   (println "start seeding")
@@ -64,6 +69,8 @@
 
 (defn make-seeder [seed-data]
   (DatomicSeeder. seed-data nil))
+
+;; ---------------------------------------------------------------------------
 
 
 (defrecord DatomicDeleter [uri]

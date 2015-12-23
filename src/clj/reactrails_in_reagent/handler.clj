@@ -1,69 +1,82 @@
 (ns reactrails-in-reagent.handler
   (:require
-    [reactrails-in-reagent.handler.utils :as h-utils]
-    [reactrails-in-reagent.handler.middleware :refer [wrap-dump-req]]
+    [reactrails-in-reagent.common-handlers :as common]
     [reactrails-in-reagent.comment :as comments]
     [reactrails-in-reagent.routes :as routes]
-    [com.rpl.specter :as s]
     [bidi.ring]
-    [ring.middleware.params :refer [wrap-params]]
-    [ring.util.response :refer [resource-response]]
     [com.stuartsierra.component :as component]
 
-    [clojure.pprint :as pp]
-    ))
+    [liberator.representation]
+    [cheshire.core :refer [generate-string]]))
 
 
-(defn index [_]
-  (println "gone there to index")
-  (assoc (resource-response (str "html/index.html") {:root "public"})
-    :headers {"Content-Type" "text/html"}))
+;; Patching liberator to use cheshire
+(defmethod liberator.representation/render-map-generic "application/json" [data _]
+  (generate-string data))
 
-(defn miss-404 [request]
-  (println "missed requested uri" (:uri request))
-  (assoc (resource-response (str "html/404.html") {:root "public"})
-    :headers {"Content-Type" "text/html"}))
+(defmethod liberator.representation/render-seq-generic "application/json" [data _]
+  (generate-string data))
 
 
-(h-utils/register-handler! 'index index)
-(h-utils/register-handler! 'miss-404 miss-404)
+;; ----------------------------------------------------------------------
+;; Regroup all of the app's handlers and their associated middleware
+(def end-points->handlers
+  (merge
+    common/end-points->handlers
+    comments/end-points->handlers))
+
+(defn end-points->middlewares [handler-component]
+  (merge
+    (common/end-points->middlewares handler-component)
+    (comments/end-points->middlewares handler-component)))
 
 
-(defn make-transformations [handler-component]
-  (merge {}
-         (comments/make-transformations handler-component)))
+;; ----------------------------------------------------------------------
+;; General handler building mechanics
+(defn- apply-middleware [end-points->handlers end-point-name middelware]
+  (update end-points->handlers end-point-name middelware))
 
-(defn apply-transformations
-  "Apply the transformations to each of the routes."
-  [transforms spector-selector->route]
-  (reduce-kv (fn [res path transformation]
-               (s/transform path transformation res))
-             spector-selector->route transforms))
-
+(defn- apply-middlewares [end-points->handlers end-points->middlewares]
+  (reduce-kv apply-middleware
+             end-points->handlers
+             end-points->middlewares))
 
 (defn prepare-routes
-  "Transforms the actuals handlers and injects them into the
-  datastructure representing the routes."
-  [routes handlers transformations]
+  "Starts by applying middlewares to their respective handlers then injects
+  the \"middlewared\" handlers inside the routes data-structure."
+  [routes handlers middlewares]
   (routes/inject-handlers routes
-                   (apply-transformations transformations handlers )))
+                   (apply-middlewares handlers middlewares )))
 
 (defn compute-handler
   "Prepares the routes datastructure then turns it into a proper ring handler."
-  [routes handlers transformations]
+  [routes handlers middleware-associations]
   (bidi.ring/make-handler
-    (prepare-routes routes handlers transformations)))
+    (prepare-routes routes handlers middleware-associations)))
 
 
-(defn start-handler [component]
+;; ----------------------------------------------------------------------
+;; Definition of the handler component
+(defn start-handler [handler-component]
   (println "assembling handler")
-  (assoc component
-    :handler (compute-handler (:routes-definition component)
-                              (:handlers-fn component)
-                              ((:transforms-fn component) component))
-    :started? true))
+  (let [{:keys [routes-definition
+                handlers
+                middelware-associations
+                general-middleware]} handler-component
 
-(defrecord Handler [routes-definition handlers-fn transforms-fn]
+        handler (compute-handler routes-definition
+                                 handlers
+                                 (middelware-associations handler-component))
+        handler' ((general-middleware handler-component) handler)]
+    (assoc handler-component
+      :handler handler'
+      :started? true)))
+
+(defrecord Handler
+  [routes-definition        ; bidi routes data-structure
+   handlers                 ; map of endpoint-names -> handlers
+   middelware-associations  ; function that given the component returns a map of endpoint-names -> middleware
+   general-middleware]      ; top middleware used on every http call
   component/Lifecycle
   (start [component]
     (if (:started? component)
@@ -72,6 +85,5 @@
   (stop [component]
     (dissoc component :handler :started?)))
 
-(defn make-handler [routes-definition handlers-fn transforms-fn]
-  (Handler. routes-definition handlers-fn transforms-fn))
-
+(defn make-handler [routes-definition handlers middleware-association general-middleware]
+  (Handler. routes-definition handlers middleware-association general-middleware))

@@ -3,22 +3,23 @@
     [clojure.pprint :as pp]))
 
 
-(def ^:private handlers (atom {}))
 
-(defn register-handler!* [key h]
-  {:pre [(var? h)]}
-  (swap! handlers assoc key h))
+(comment
+  (def ^:private handlers (atom {}))
 
-(defmacro register-handler! [key h]
-  {:pre [(symbol? h)]}
-  (let [v (resolve h)]
-    `(register-handler!* ~key ~v)))
+  (defn register-handler!* [key h]
+    {:pre [(var? h)]}
+    (swap! handlers assoc key h))
 
-(defn get-handlers-dev [] @handlers)
+  (defmacro register-handler! [key h]
+    {:pre [(symbol? h)]}
+    (let [v (resolve h)]
+      `(register-handler!* ~key ~v)))
 
-(defn deref-handlers [hs]
-  (reduce-kv (fn [acc k v] (assoc acc k (deref v))) {} hs))
+  (defn get-handlers-dev [] @handlers)
 
-(defn get-handlers-prod []
-  (deref-handlers @handlers))
+  (defn deref-handlers [hs]
+    (reduce-kv (fn [acc k v] (assoc acc k (deref v))) {} hs))
 
+  (defn get-handlers-prod []
+    (deref-handlers @handlers)))

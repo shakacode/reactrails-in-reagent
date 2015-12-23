@@ -42,8 +42,9 @@
 
 
      (defn inject-handlers [routes endpoints->handler]
-       "Walks the routes datastructure and replaces ids for handlers with
+       "Walks the routes datastructure and replaces endpoints names (symbols) with
        the actual handler."
        (s/transform endpoints-path
                     (fn [v] (get endpoints->handler v v))
                     routes))))
+

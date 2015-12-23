@@ -1,6 +1,5 @@
 (ns reactrails-in-reagent.comment
   (:require
-    [clojure.pprint :as pp]
     [schema.core :as s]
     [schema.coerce :as coerce]
     [schema.utils :as s-utils]
@@ -8,13 +7,10 @@
     [datomic.api :as d]
     [bidi.bidi :as bidi]
     [reactrails-in-reagent.comment.schemas :refer [New-comment]]
-    [reactrails-in-reagent.handler.utils :as h-utils]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
-    [com.rpl.specter :as specter]
     [ring.middleware.params :refer [wrap-params]]
-    [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
-    [clojure.pprint :as pp]
-    ))
+    [ring.middleware.json :refer [wrap-json-params]]
+    [clojure.pprint :as pp]))
 
 ;; ----------------------------------------------------------------------------
 ;; generic comment handling
@@ -76,8 +72,9 @@
 
 (defn post-redirection [ctx]
   (let [id (::id ctx)
-        routes (-> ctx :request :routes)]
-    {:location (bidi/path-for routes :comments/comment-entry :id id)}))
+        routes (-> ctx :request :routes)
+        location (bidi/path-for routes 'comments/comment-entry :id id)]
+    {:location location}))
 
 (def comment-list
   (resource {:available-media-types ["application/json"]
@@ -118,19 +115,18 @@
 
 
 ;; ----------------------------------------------------------------------------
-;; Routes definition
+;; Routes associations
 
+(defn- middleware [handler-component]
+  (comp wrap-json-params
+        wrap-params
+        #(wrap-assoc-request % :conn (-> handler-component :database :connection)
+                               :routes (:routes-definition handler-component))))
 
-(h-utils/register-handler! 'comments/comment-list comment-list)
-(h-utils/register-handler! 'comments/comment-entry comment-entry)
+(def end-points->handlers
+  {'comments/comment-list comment-list
+   'comments/comment-entry comment-entry})
 
-
-(defn make-transformations [handler-component]
-  {(specter/multi-path 'comments/comment-list
-                       'comments/comment-entry)
-   #(-> %
-        (wrap-assoc-request :conn (-> handler-component :database :connection)
-                                    :routes (:routes-definition handler-component))
-        (wrap-params)
-        (wrap-json-params)
-        )})
+(defn end-points->middlewares [handler-component]
+  {'comments/comment-list  (middleware handler-component)
+   'comments/comment-entry (middleware handler-component)})

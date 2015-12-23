@@ -1,20 +1,28 @@
 (ns user
   (:require
     [reloaded.repl :refer [system init start stop go ]]
-    [reactrails-in-reagent.system :refer [make-system dev-config]]
+    [dev.system :refer [make-system config]]
+    [reactrails-in-reagent.system :as prod]
 
     [datomic.api :as d]
 
     [cheshire.core :refer [generate-string]]
     ))
 
-(reloaded.repl/set-init! #(make-system dev-config))
+
+(defn install-dev []
+  (reloaded.repl/set-init! #(make-system config)))
+
+
+(defn install-prod []
+  (reloaded.repl/set-init! #(prod/make-system (prod/config))))
+
 
 
 
 (comment
 
-
+  (install-prod)
 
   (go)
   (stop)

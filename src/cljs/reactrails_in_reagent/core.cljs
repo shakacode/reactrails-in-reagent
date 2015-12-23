@@ -10,12 +10,12 @@
 
 (enable-console-print!)
 
-(defn on-js-reload []
-  (.log js/console "reloaded!!!"))
-
 
 (def initial-state {:comments []})
 (defonce app-state (r/atom initial-state))
+
+
+
 
 (defonce fetcher-control (atom (async/chan)))
 
@@ -42,7 +42,28 @@
   (views/render! app-state)
   (d/start-dispatcher! app-state)
   (d/dispatch! (actions/->GetAllComments))
-  (start-fetching! 10000))
+  ;(start-fetching! 10000)
+  )
 
 
 (defonce started (main))
+
+
+(defn on-js-reload []
+  (.log js/console "reloaded!!!")
+  (views/render! app-state)
+  )
+
+
+(comment
+  (def toto (async/chan))
+
+  (async/put! toto 1)
+  (async/put! toto 2)
+  (async/put! toto 3)
+
+  (async/close! toto)
+
+  (async/take! toto #(println %))
+
+  )

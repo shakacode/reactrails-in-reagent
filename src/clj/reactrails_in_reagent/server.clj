@@ -5,10 +5,9 @@
 
 (defn- start-web-server [component]
   (println "starting web server")
-  (let [{:keys [handler-component options middleware]} component
+  (let [{:keys [handler-component options]} component
         handler (:handler handler-component)
-        handler' (if middleware (middleware handler) handler)
-        server (web/run handler' options)]
+        server (web/run handler options)]
     (assoc component
       :server server
       :started? true)))
@@ -16,10 +15,9 @@
 (defn stop-web-server [component]
   (println "stopping web server")
   (web/stop)
-  (println "done stoping webserver")
   (dissoc component :handler :server :started?))
 
-(defrecord WebServer [handler options middleware]
+(defrecord WebServer [options]
   component/Lifecycle
   (start [component]
     (if (:started? component)
@@ -33,7 +31,6 @@
     (try
       (stop-web-server component)
       (catch Exception e
-        (println "catching stuff")
         (println e)
         (throw e)))))
 
@@ -42,9 +39,7 @@
   ([]
     (make-web-server {}))
   ([options]
-    (make-web-server options nil))
-  ([options wrapper]
-   (WebServer. nil options wrapper)))
+    (WebServer. options)))
 
 
 
