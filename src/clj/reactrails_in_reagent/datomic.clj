@@ -80,3 +80,4 @@
     component))
 
 
+(def make-db-deleter ->DatomicDeleter)

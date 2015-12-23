@@ -4,16 +4,12 @@
     [reactrails-in-reagent.server :as server]
     [reactrails-in-reagent.handler :as handler]
     [reactrails-in-reagent.routes :refer [routes]]
-
+    [reactrails-in-reagent.utils :refer [read-edn-ressource]]
 
     [com.stuartsierra.component :as component]
-    [clojure.java.io :as io]
 
-    [ring.middleware.resource :refer [wrap-resource]])
-  (:import (datomic Util)))
+    [ring.middleware.resource :refer [wrap-resource]]))
 
-(defn read-edn-ressource [file-name]
-  (-> file-name io/resource io/reader Util/readAll first))
 
 
 (defn middleware [_]

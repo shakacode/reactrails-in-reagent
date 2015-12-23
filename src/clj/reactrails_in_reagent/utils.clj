@@ -1,7 +1,9 @@
 (ns reactrails-in-reagent.utils
   (:require
     [datomic.api :as d]
-    [clojure.pprint :as pp]))
+    [clojure.java.io :as io])
+  (:import
+    (datomic Util)))
 
 
 (defn assoc-tempid
@@ -11,3 +13,7 @@
    (assoc m :db/id (d/tempid part)))
   ([m part id]
    (assoc m :db/id (d/tempid part id))))
+
+
+(defn read-edn-ressource [file-name]
+  (-> file-name io/resource io/reader Util/readAll first))

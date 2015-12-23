@@ -83,6 +83,7 @@
       component
       (start-handler component)))
   (stop [component]
+    (println "Stoping handler")
     (dissoc component :handler :started?)))
 
 (defn make-handler [routes-definition handlers middleware-association general-middleware]

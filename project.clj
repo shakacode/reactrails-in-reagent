@@ -32,6 +32,8 @@
   :profiles {:dev {:dependencies [[reloaded.repl "0.2.1"]
                                   [ring/ring-devel "1.4.0"]
                                   [ring/ring-mock "0.3.0"]
+                                  [peridot "0.4.2"]
+                                  [juxt/iota "0.2.0"]
 
                                   [compojure "1.0.2"]]}}
 
@@ -40,6 +42,8 @@
                  "src/dev"
                  "src/cljc"
                  "script"]
+
+  :test-paths ["test"]
 
 
 

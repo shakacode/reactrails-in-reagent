@@ -11,6 +11,7 @@
                      (bidi.ring/make-handler)))
 
 (defn start-dev-handler [component]
+  (println "Starting DevHandler")
   (let [middleware ((:general-middleware component) component)]
     (assoc component
       :started? true
@@ -23,6 +24,7 @@
       component
       (start-dev-handler component)))
   (stop [component]
+    (println "Stoping DevHandler")
     (dissoc component :handler :started?)))
 
 

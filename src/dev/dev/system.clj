@@ -4,11 +4,10 @@
     [reactrails-in-reagent.server :as server]
     [dev.handler :as handler]
     [reactrails-in-reagent.routes :refer [routes]]
+    [reactrails-in-reagent.utils :refer [read-edn-ressource]]
 
 
     [com.stuartsierra.component :as component]
-    [clojure.java.io :as io]
-
 
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.json :refer [wrap-json-params]]
@@ -20,13 +19,11 @@
     [liberator.representation]
     [cheshire.core :refer [generate-string]]
 
-    [liberator.dev :refer [wrap-trace]])
-  (:import (datomic Util)))
+    [liberator.dev :refer [wrap-trace]]))
 
 
 
-(defn read-edn-ressource [file-name]
-  (-> file-name io/resource io/reader Util/readAll first))
+
 
 
 (defn middleware [handler-component]

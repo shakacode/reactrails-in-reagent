@@ -116,16 +116,22 @@
 ;; ----------------------------------------------------------------------------
 ;; Routes associations
 
-(defn- middleware [handler-component]
+(defn- middleware-list [handler-component]
   (comp wrap-json-params
         wrap-params
         #(wrap-assoc-request % :conn (-> handler-component :database :connection)
                                :routes (:routes-definition handler-component))))
+
+(defn- middleware-entry [handler-component]
+  (comp wrap-params
+        #(wrap-assoc-request % :conn (-> handler-component :database :connection)
+                             :routes (:routes-definition handler-component))))
+
 
 (def end-points->handlers
   {'comments/comment-list comment-list
    'comments/comment-entry comment-entry})
 
 (defn end-points->middlewares [handler-component]
-  {'comments/comment-list  (middleware handler-component)
-   'comments/comment-entry (middleware handler-component)})
+  {'comments/comment-list  (middleware-list handler-component)
+   'comments/comment-entry (middleware-entry handler-component)})

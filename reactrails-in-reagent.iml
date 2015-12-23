@@ -57,10 +57,13 @@
     <orderEntry type="library" name="Leiningen: io.undertow/undertow-servlet:1.3.0.Beta9" level="project" />
     <orderEntry type="library" name="Leiningen: io.undertow/undertow-websockets-jsr:1.3.0.Beta9" level="project" />
     <orderEntry type="library" name="Leiningen: joda-time:2.6" level="project" />
+    <orderEntry type="library" name="Leiningen: juxt/iota:0.2.0" level="project" />
     <orderEntry type="library" name="Leiningen: liberator:0.13" level="project" />
     <orderEntry type="library" name="Leiningen: net.incongru.watchservice/barbary-watchservice:1.0" level="project" />
     <orderEntry type="library" name="Leiningen: net.java.dev.jna/jna:3.2.2" level="project" />
     <orderEntry type="library" name="Leiningen: ns-tracker:0.3.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.apache.httpcomponents/httpcore:4.1.4" level="project" />
+    <orderEntry type="library" name="Leiningen: org.apache.httpcomponents/httpmime:4.1.3" level="project" />
     <orderEntry type="library" name="Leiningen: org.apache.tomcat/tomcat-jdbc:7.0.27" level="project" />
     <orderEntry type="library" name="Leiningen: org.apache.tomcat/tomcat-juli:7.0.27" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.7.0" level="project" />
@@ -69,6 +72,7 @@
     <orderEntry type="library" name="Leiningen: org.clojure/core.cache:0.6.4" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.incubator:0.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.memoize:0.5.8" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/data.codec:0.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.csv:0.1.2" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.json:0.2.6" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.priority-map:0.0.4" level="project" />
@@ -111,6 +115,7 @@
     <orderEntry type="library" name="Leiningen: org.slf4j/slf4j-nop:1.7.7" level="project" />
     <orderEntry type="library" name="Leiningen: org.wildfly.common/wildfly-common:1.0.0.Alpha2" level="project" />
     <orderEntry type="library" name="Leiningen: org.wildfly.security/wildfly-security-manager:1.1.2.Final" level="project" />
+    <orderEntry type="library" name="Leiningen: peridot:0.4.2" level="project" />
     <orderEntry type="library" name="Leiningen: potemkin:0.4.1" level="project" />
     <orderEntry type="library" name="Leiningen: prismatic/schema:1.0.4" level="project" />
     <orderEntry type="library" name="Leiningen: reagent-forms:0.5.13" level="project" />
@@ -118,6 +123,7 @@
     <orderEntry type="library" name="Leiningen: reloaded.repl:0.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: riddley:0.1.10" level="project" />
     <orderEntry type="library" name="Leiningen: ring-cors:0.1.7" level="project" />
+    <orderEntry type="library" name="Leiningen: ring-mock:0.1.5" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-codec:1.0.0" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-core:1.4.0" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-devel:1.4.0" level="project" />
