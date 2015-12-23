@@ -18,8 +18,13 @@
                     :where
                     [?e :comment/text]])
 
-(defn get-comment [id conn]
-  (d/pull (d/db conn) '[*] id))
+(defn get-comment [conn id]
+  (d/q '[:find (pull ?e [*]) .
+         :in $ ?e
+         :where [?e :comment/author]]
+       (d/db conn)
+       id))
+
 
 (defn get-all-comments [conn]
   (d/q all-comments (d/db conn)))
@@ -103,7 +108,7 @@
 (defn response-comment-entry [ctx]
   (let [conn (get-in  ctx [:request :conn])
         {id :id} (:checked-params ctx)
-        comment (get-comment id conn)]
+        comment (get-comment conn id)]
     comment))
 
 
