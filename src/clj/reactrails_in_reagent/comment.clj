@@ -105,16 +105,23 @@
       [false {:checked-params checked-params}]
       true)))
 
-(defn response-comment-entry [ctx]
+(defn comment-entry-exists? [ctx]
   (let [conn (get-in  ctx [:request :conn])
         {id :id} (:checked-params ctx)
         comment (get-comment conn id)]
-    comment))
+    (if comment
+      [true {::comment comment}]
+      false)))
+
+(defn response-comment-entry [ctx]
+  (::comment ctx))
+
 
 
 (def comment-entry
   (resource {:available-media-types ["application/json"]
              :malformed?            malformed-comment-entry-params?
+             :exists?               comment-entry-exists?
              :handle-ok             response-comment-entry}))
 
 

@@ -105,12 +105,21 @@
     (given c
            [] :? comment-coercer)))
 
+(defn test-fetching-non-existant-comment [app]
+  (let [res (-> (peridot/session app)
+                (peridot/request (bidi/path-for routes 'comments/comment-entry :id 1)))]
+    (given res
+           [:response :status] := 404)))
+
 (deftest fetching-one-comment
   (let [c-id (comments/transact-new-comment (conn) {:comment/author "1" :comment/text "t1"})]
-    (println "")
-    (testing "with dev handler"
-      (test-fetching-one-comment (handler-dev) c-id))
-    (testing "with prod handler"
-      (test-fetching-one-comment (handler-prod) c-id))))
 
-;(t/run-tests)
+    (testing "when the comment does exist"
+      (testing "with dev handler" (test-fetching-one-comment (handler-dev) c-id))
+      (testing "with prod handler" (test-fetching-one-comment (handler-prod) c-id))))
+
+  (testing "when the comment doesn't exist"
+    (testing "with dev handler") (test-fetching-non-existant-comment (handler-dev))
+    (testing "with dev handler") (test-fetching-non-existant-comment (handler-prod))))
+
+(t/run-tests)
