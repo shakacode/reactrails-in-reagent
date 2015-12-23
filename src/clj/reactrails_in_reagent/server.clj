@@ -3,7 +3,7 @@
     [com.stuartsierra.component :as component]
     [immutant.web :as web]))
 
-(defn- start-web-server [component]
+(defn start-web-server [component]
   (println "starting web server")
   (let [{:keys [handler-component options]} component
         handler (:handler handler-component)

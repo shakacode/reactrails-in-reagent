@@ -18,11 +18,9 @@
        (.stringify js/JSON )))
 
 (defn JSON->clj [v]
-  (let [v' (.parse js/JSON v)
-        _ (println "parsed" v')]
-    (->> v
-         (.parse js/JSON)
-         (js->clj))))
+  (->> v
+       (.parse js/JSON)
+       (js->clj)))
 
 (s/defschema Comment (merge New-comment
                             {(s/required-key :comment/created) js/Date

@@ -44,7 +44,6 @@
 
 (defn start-datomic-seeder [seeder]
   (println "start seeding")
-  (println seeder)
 
   (try
     @(d/transact (-> seeder :database :connection)
@@ -52,7 +51,6 @@
     (catch Exception e
       (println e)
       (throw e)))
-
 
   (println "seeded!")
   (assoc seeder

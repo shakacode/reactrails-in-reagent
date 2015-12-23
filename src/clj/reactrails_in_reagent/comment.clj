@@ -9,8 +9,7 @@
     [reactrails-in-reagent.comment.schemas :refer [New-comment]]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [ring.middleware.params :refer [wrap-params]]
-    [ring.middleware.json :refer [wrap-json-params]]
-    [clojure.pprint :as pp]))
+    [ring.middleware.json :refer [wrap-json-params]]))
 
 ;; ----------------------------------------------------------------------------
 ;; generic comment handling
