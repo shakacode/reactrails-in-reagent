@@ -97,13 +97,16 @@
       (testing "with prod handler" (test-adding-wellformed app-prod comment2)))))
 
 
-(defn test-fetching-one-comment [app id]
+(defn test-fetching-one-comment [app id comment]
   (let [c (-> (peridot/session app)
               (peridot/request (bidi/path-for routes 'comments/comment-entry :id id))
               :response
-              :body)]
-    (given c
-           [] :? comment-coercer)))
+              :body)
+        coerced (comment-coercer c)]
+    (given coerced
+           [] :- schemas/Comment
+           :comment/author := (:comment/author comment)
+           :comment/text := (:comment/text comment))))
 
 (defn test-fetching-non-existant-comment [app]
   (let [res (-> (peridot/session app)
@@ -112,11 +115,12 @@
            [:response :status] := 404)))
 
 (deftest fetching-one-comment
-  (let [c-id (comments/transact-new-comment (conn) {:comment/author "1" :comment/text "t1"})]
+  (let [comment{:comment/author "1" :comment/text "t1"}
+        c-id (comments/transact-new-comment (conn) comment)]
 
     (testing "when the comment does exist"
-      (testing "with dev handler" (test-fetching-one-comment (handler-dev) c-id))
-      (testing "with prod handler" (test-fetching-one-comment (handler-prod) c-id))))
+      (testing "with dev handler" (test-fetching-one-comment (handler-dev) c-id comment))
+      (testing "with prod handler" (test-fetching-one-comment (handler-prod) c-id comment))))
 
   (testing "when the comment doesn't exist"
     (testing "with dev handler") (test-fetching-non-existant-comment (handler-dev))
