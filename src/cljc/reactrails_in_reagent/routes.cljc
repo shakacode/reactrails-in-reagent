@@ -19,6 +19,8 @@
                  [true 'miss-404]]])
 
 
+(defn path-for [endpoint-name & params]
+  (apply bidi/path-for routes endpoint-name params))
 
 
 #?(:clj

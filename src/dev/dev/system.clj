@@ -33,8 +33,7 @@
         #(wrap-trace % :header :ui)
         wrap-json-params
         wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection)
-                             :routes (-> handler-component :routes-definition))))
+        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
 
 

@@ -5,7 +5,7 @@
     [schema.utils :as s-utils]
     [liberator.core :refer [resource]]
     [datomic.api :as d]
-    [bidi.bidi :as bidi]
+    [reactrails-in-reagent.routes :as routes]
     [reactrails-in-reagent.comment.schemas :refer [New-comment]]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [ring.middleware.params :refer [wrap-params]]
@@ -76,8 +76,7 @@
 
 (defn post-redirection [ctx]
   (let [id (::id ctx)
-        routes (-> ctx :request :routes)
-        location (bidi/path-for routes 'comments/comment-entry :id id)]
+        location (routes/path-for 'comments/comment-entry :id id)]
     {:location location}))
 
 (def comment-list
@@ -131,13 +130,11 @@
 (defn- middleware-list [handler-component]
   (comp wrap-json-params
         wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection)
-                               :routes (:routes-definition handler-component))))
+        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
 (defn- middleware-entry [handler-component]
   (comp wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection)
-                             :routes (:routes-definition handler-component))))
+        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
 
 (def end-points->handlers
