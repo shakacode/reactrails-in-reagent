@@ -1,8 +1,7 @@
 (ns reactrails-in-reagent.actions
   (:require
     [reactrails-in-reagent.dispatch :as d]
-    [reactrails-in-reagent.client :as client]
-    [cljs.core.async :as async]))
+    [reactrails-in-reagent.client :as client]))
 
 
 (defrecord ReceivedComment [comment]

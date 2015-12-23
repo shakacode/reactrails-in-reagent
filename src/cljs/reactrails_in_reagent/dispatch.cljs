@@ -1,8 +1,7 @@
 (ns reactrails-in-reagent.dispatch
   (:require
     [cljs.core.async :as async]
-    [clojure.set :as set]
-    [petrol.core :as p])
+    [clojure.set :as set])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
 
 (enable-console-print!)

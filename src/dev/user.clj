@@ -21,6 +21,7 @@
 
 
 (comment
+  (install-dev)
 
   (install-prod)
 
