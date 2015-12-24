@@ -10,7 +10,9 @@
     [clojure.test :as t :refer [deftest testing is are]]
     [juxt.iota :refer [given]]
     [peridot.core :as peridot]
-    [cheshire.core :as json]))
+    [cheshire.core :as json]
+    [reactrails-in-reagent.routes :as routes]
+    [com.rpl.specter :refer [select ALL]]))
 
 
 (defonce system (atom nil))
@@ -115,7 +117,7 @@
            [:response :status] := 404)))
 
 (deftest fetching-one-comment
-  (let [comment{:comment/author "1" :comment/text "t1"}
+  (let [comment {:comment/author "1" :comment/text "t1"}
         c-id (comments/transact-new-comment (conn) comment)]
 
     (testing "when the comment does exist"
@@ -125,5 +127,40 @@
   (testing "when the comment doesn't exist"
     (testing "with dev handler") (test-fetching-non-existant-comment (handler-dev))
     (testing "with dev handler") (test-fetching-non-existant-comment (handler-prod))))
+
+
+(def comment-list-coercer
+  (coerce/coercer schemas/Comment-list
+                  {schemas/Comment-list #(json/parse-string % true)
+                   schemas/date-schema schemas/date-matcher}))
+
+(defn- select-comment [author cssss]
+  (select [ALL #(= author (:comment/author %))] cssss))
+
+(defn test-fetching-all-comments [app]
+  (let [cs (-> (peridot/session app)
+               (peridot/request (routes/path-for 'comments/comment-list))
+               :response
+               :body)
+        cs' (comment-list-coercer cs)
+        c1 (select-comment (:comment/author comment1) cs')
+        c2 (select-comment (:comment/author comment2) cs')]
+    (given c1
+           [] :- schemas/Comment
+           :comment/author := (:comment/author comment1)
+           :comment/text := (:comment/text comment1))
+    (given c2
+           [] :- schemas/Comment
+           :comment/author := (:comment/author comment2)
+           :comment/text := (:comment/text comment2))))
+
+(deftest fetching-all-comments
+  (comments/transact-new-comment (conn) comment1)
+  (comments/transact-new-comment (conn) comment2)
+  (testing "with dev handler" (test-fetching-all-comments (handler-dev)))
+  (testing "with prod handler" (test-fetching-all-comments (handler-prod))))
+
+
+
 
 (t/run-tests)

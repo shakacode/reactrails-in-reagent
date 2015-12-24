@@ -23,7 +23,7 @@
                             {(s/required-key :comment/created) date-schema
                              (s/required-key :db/id) long-schema}))
 
-
+(s/defschema Comment-list [Comment])
 
 
 (def date-matcher #?(:clj  instant/read-instant-date
