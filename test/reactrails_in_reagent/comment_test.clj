@@ -145,8 +145,6 @@
         cs' (comment-list-coercer cs)
         c1 (first (select-comment (:comment/author comment1) cs'))
         c2 (first (select-comment (:comment/author comment2) cs'))]
-    (println "c1 " c1)
-    (println "c2 " c2)
     (given c1
            [] :- schemas/Comment
            :comment/author := (:comment/author comment1)
