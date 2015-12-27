@@ -69,6 +69,7 @@
 
 
 (defn dispatch! [message]
+  (println "dispatching; " message)
   (async/put! (:dispatch-channel @!dispatch-state) message))
 
 

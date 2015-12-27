@@ -11,7 +11,8 @@
 (enable-console-print!)
 
 
-(def initial-state {:comments []})
+(def initial-state {:nav/index 0
+                    :comments []})
 (defonce app-state (r/atom initial-state))
 
 

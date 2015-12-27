@@ -34,4 +34,7 @@
       #{channel-res})))
 
 
-
+(defrecord SelectFormStyle [style]
+  d/Message
+  (process-message* [this app]
+    (assoc app :nav/index (:style this))))
