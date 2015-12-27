@@ -26,14 +26,13 @@
 
 
 
-(defn- fresh-state [c]
-  (let [{:keys [channels dispatch-channel]} @!dispatch-state
+(defn- refresh-state [state chan]
+  (let [{:keys [channels dispatch-channel]} state
         channels (-> channels
                      (disj dispatch-channel)
-                     (conj c))]
+                     (conj chan))]
     {:channels channels
-     :dispatch-channel c}))
-
+     :dispatch-channel chan}))
 
 (defn- remove-closed-channel! [c]
   (swap! !dispatch-state update :channels #(disj % c)))
@@ -48,7 +47,7 @@
   (let [dispatch-c (async/chan)]
 
     ; set up dispatch state
-    (reset! !dispatch-state (fresh-state dispatch-c))
+    (swap! !dispatch-state refresh-state dispatch-c)
 
     ; start dispatch loop
     (go-loop
@@ -69,7 +68,7 @@
 
 
 (defn dispatch! [message]
-  (println "dispatching; " message)
+  (println "dispatching: " message)
   (async/put! (:dispatch-channel @!dispatch-state) message))
 
 
