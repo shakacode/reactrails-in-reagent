@@ -4,10 +4,7 @@
     [schema.coerce :as coerce]
     [clojure.set]
 
-    #?(:clj
-    [clojure.instant :as instant])
-    [clojure.instant :as instant]
-    [clojure.instant :as instant]))
+    #?(:clj [clojure.instant :as instant])))
 
 (s/defschema New-comment {(s/required-key :comment/author)  s/Str
                           (s/required-key :comment/text) s/Str})
