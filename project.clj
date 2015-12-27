@@ -21,6 +21,7 @@
                  [prismatic/schema "1.0.4"]
                  [com.stuartsierra/component "0.2.3"]
                  [cheshire "5.5.0"]
+                 [cljs-ajax "0.5.2"]
 
                  [figwheel-sidecar "0.5.0"]
 

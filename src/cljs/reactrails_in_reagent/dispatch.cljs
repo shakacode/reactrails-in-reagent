@@ -55,14 +55,13 @@
       (when-let [channels (-> !dispatch-state deref :channels seq)]
 
         (let [[message channel] (async/alts! channels)]
-          (cond
-            (nil? message)
-            (remove-closed-channel! channel)
+          (when (nil? message)
+            (remove-closed-channel! channel))
 
-            (satisfies? Message message)
-            (apply-message-consequence! !app-db message)
+          (when (satisfies? Message message)
+            (apply-message-consequence! !app-db message))
 
-            (satisfies? EventSource message)
+          (when (satisfies? EventSource message)
             (add-event-source! message)))
         (recur)))))
 

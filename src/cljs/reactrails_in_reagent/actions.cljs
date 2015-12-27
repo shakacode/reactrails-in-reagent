@@ -4,19 +4,16 @@
     [reactrails-in-reagent.client :as client]))
 
 
+(defrecord SelectFormStyle [style]
+  d/Message
+  (process-message* [this app]
+    (assoc app :nav/index (:style this))))
+
 (defrecord ReceivedComment [comment]
   d/Message
   (process-message* [this app]
     (let [c (:comment this)]
       (update app :comments conj c))))
-
-
-(defrecord NewComment [comment]
-  d/EventSource
-  (watch-channels [this]
-    (let [[channel-res cb] (client/result-in-channel ->ReceivedComment)]
-      (client/send-new-comment! (:comment this) cb)
-      #{channel-res})))
 
 
 (defrecord ReceivedAllComments [comments]
@@ -27,6 +24,14 @@
       (assoc app :comments with-new-ones))))
 
 
+(defrecord NewComment [comment]
+  d/EventSource
+  (watch-channels [this]
+    (let [[channel-res cb] (client/result-in-channel ->ReceivedComment)]
+      (client/send-new-comment! (:comment this) cb)
+      #{channel-res})))
+
+
 (defrecord GetAllComments []
   d/EventSource
   (watch-channels [_]
@@ -35,7 +40,4 @@
       #{channel-res})))
 
 
-(defrecord SelectFormStyle [style]
-  d/Message
-  (process-message* [this app]
-    (assoc app :nav/index (:style this))))
+
