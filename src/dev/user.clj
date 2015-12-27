@@ -18,7 +18,7 @@
   (reloaded.repl/set-init! #(prod/make-system (prod/config))))
 
 
-
+(install-dev)
 
 (comment
   (install-dev)

@@ -29,11 +29,10 @@
            :class "form-control"}])
 
 (def comment-textarea
-  [:input {:field :textarea
-           :type  "textarea"
-           :id :text
-           :placeholder "Say something using Markdown"
-           :class "form-control" :name "text"}])
+  [:textarea {:field :textarea
+              :id :text
+              :placeholder "Say something using Markdown"
+              :class "form-control" :name "text"}])
 
 
 (defn template-form-horizontal [doc]
@@ -123,7 +122,7 @@
    [:h2 {:class "comment-author"} (:comment/author c)]
    [:span {:class "comment-text"
            :dangerouslySetInnerHTML
-                  {:__html (-> c :comment/text str )}}]])
+                  {:__html (-> c :comment/text str js/marked)}}]])
 
 
 (defn comments [comments-list]
