@@ -5,7 +5,19 @@
     [reagent-forms.core :as r-forms]
 
     [reactrails-in-reagent.dispatch :as d]
-    [reactrails-in-reagent.actions :as actions]))
+    [reactrails-in-reagent.actions :as actions]
+
+    [cljs.pprint :as pp]
+
+    ))
+
+
+
+
+(defn submit [event doc-atom]
+  (.preventDefault event)
+  (d/dispatch! (actions/->NewComment @doc-atom))
+  (reset! doc-atom {}))
 
 
 (def input-name
@@ -22,12 +34,6 @@
            :id :text
            :placeholder "Say something using Markdown"
            :class "form-control" :name "text"}])
-
-
-(defn submit [event doc-atom]
-  (.preventDefault event)
-  (d/dispatch! (actions/->NewComment @doc-atom))
-  (reset! doc-atom {}))
 
 
 (defn template-form-horizontal [doc]
@@ -108,8 +114,8 @@
     [:div [form]]))
 
 (defn state-view [app-state]
-  [:div
-   (str @app-state)])
+  [:pre
+   (with-out-str (pp/pprint @app-state))])
 
 
 (defn comment-view [c]
@@ -137,3 +143,5 @@
 (defn render! [app-state]
   (r/render-component [app app-state]
                       (.-body js/document)))
+
+

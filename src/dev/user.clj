@@ -43,7 +43,7 @@
                 (-> db :connection d/db)))
 
 
-  all
+  (count all)
 
   (generate-string all)
 

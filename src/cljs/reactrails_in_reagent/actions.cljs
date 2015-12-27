@@ -19,11 +19,12 @@
       #{channel-res})))
 
 
-;; TODO rework to handle concurency cases
 (defrecord ReceivedAllComments [comments]
   d/Message
   (process-message* [this app]
-    (assoc app :comments (:comments this))))
+    (let [current-comments (:comments app)
+          with-new-ones (reduce conj current-comments (:comments this))]
+      (assoc app :comments with-new-ones))))
 
 
 (defrecord GetAllComments []

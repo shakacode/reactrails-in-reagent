@@ -11,11 +11,17 @@
 (enable-console-print!)
 
 
+(defn compare-dates [comment1 comment2]
+  (->> [comment1 comment2]
+       (map (juxt :comment/created :db/id))
+       reverse
+       (apply compare)))
+
+
 (def initial-state {:nav/index 0
-                    :comments []})
+                    :comments (sorted-set-by compare-dates)})
+
 (defonce app-state (r/atom initial-state))
-
-
 
 
 (defonce fetcher-control (atom (async/chan)))
@@ -43,7 +49,7 @@
   (views/render! app-state)
   (d/start-dispatcher! app-state)
   (d/dispatch! (actions/->GetAllComments))
-  ;(start-fetching! 10000)
+  (start-fetching! 10000)
   )
 
 
@@ -66,5 +72,11 @@
   (async/close! toto)
 
   (async/take! toto #(println %))
+
+  (->> @app-state
+       :comments
+       ;(sort-by :comment/created)
+       type)
+
 
   )
