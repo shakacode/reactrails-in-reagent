@@ -112,17 +112,18 @@
    (str @app-state)])
 
 
-(defn comment-entry [c]
-  [:li {:key (:db/id c)}
-   [:p "id: " (:db/id c)]
-   [:p "author: " (:comment/author c)]
-   [:p "text: " (:comment/text c)]
-   [:p "created: " (-> c :comment/created str)]])
+(defn comment-view [c]
+  [:li {:key (:db/id c) :class "comment" }
+   [:h2 {:class "comment-author"} (:comment/author c)]
+   [:span {:class "comment-text"
+           :dangerouslySetInnerHTML
+                  {:__html (-> c :comment/text str )}}]])
+
 
 (defn comments [comments-list]
   [:ul
    (for [c @comments-list]
-     (comment-entry c))])
+     (comment-view c))])
 
 
 (defn app [app-state]
