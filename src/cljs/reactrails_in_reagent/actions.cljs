@@ -27,16 +27,16 @@
 (defrecord NewComment [comment]
   d/EventSource
   (watch-channels [this]
-    (let [[channel-res cb] (client/result-in-channel ->ReceivedComment)]
-      (client/send-new-comment! (:comment this) cb)
+    (let [[channel-res handler error-handler] (client/make-core-async-callbacks ->ReceivedComment)]
+      (client/send-new-comment! (:comment this) handler error-handler)
       #{channel-res})))
 
 
 (defrecord GetAllComments []
   d/EventSource
   (watch-channels [_]
-    (let [[channel-res cb] (client/result-in-channel ->ReceivedAllComments)]
-      (client/get-all-comments! cb)
+    (let [[channel-res handler error-handler] (client/make-core-async-callbacks ->ReceivedAllComments)]
+      (client/get-all-comments! handler error-handler)
       #{channel-res})))
 
 

@@ -49,7 +49,7 @@
   (views/render! app-state)
   (d/start-dispatcher! app-state)
   (d/dispatch! (actions/->GetAllComments))
-  (start-fetching! 10000)
+  ;(start-fetching! 10000)
   )
 
 
