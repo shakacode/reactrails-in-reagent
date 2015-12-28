@@ -1,7 +1,6 @@
 (ns reactrails-in-reagent.comment.schemas
   (:require
     [schema.core :as s]
-    [schema.coerce :as coerce]
     [clojure.set]
 
     #?(:clj [clojure.instant :as instant])))
