@@ -136,7 +136,7 @@
    [form-style-selector (:nav/index @app-state)]
    [form (r/cursor app-state [:nav/index])]
    [comments (r/cursor app-state [:comments])]
-   [state-view app-state]
+   ;[state-view app-state]
    ])
 
 (defn render! [app-state]

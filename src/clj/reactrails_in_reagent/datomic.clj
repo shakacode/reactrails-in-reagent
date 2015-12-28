@@ -31,6 +31,7 @@
       component
       (do (println "instaling schema")
           @(d/transact (-> component :database :connection) schema)
+          (println "schema installed")
           (assoc component :started? true))))
   (stop [component]
     (dissoc component :started?)))

@@ -21,14 +21,19 @@
                  [prismatic/schema "1.0.4"]
                  [com.stuartsierra/component "0.2.3"]
                  [cheshire "5.5.0"]
-                 [cljs-ajax "0.5.2"]
+                 [cljs-ajax "0.5.2"]]
 
-                 [figwheel-sidecar "0.5.0"]
-
-                 ]
   :plugins [[lein-cljsbuild "1.1.1"]
-            ;[lein-figwheel "0.5.0-1"]
-            ]
+            [lein-figwheel "0.5.0-1"]]
+
+
+  :source-paths ["src/clj"
+                 "src/cljs"
+                 "src/cljc"]
+
+  :test-paths ["test"]
+
+  :main reactrails-in-reagent.core
 
   :profiles {:dev {:dependencies [[reloaded.repl "0.2.1"]
                                   [ring/ring-devel "1.4.0"]
@@ -36,16 +41,10 @@
                                   [peridot "0.4.2"]
                                   [juxt/iota "0.2.0"]
 
-                                  [compojure "1.0.2"]]}}
+                                  [compojure "1.0.2"]]
 
-  :source-paths ["src/clj"
-                 "src/cljs"
-                 "src/dev"
-                 "src/cljc"
-                 "script"]
-
-  :test-paths ["test"]
-
+                   :source-paths ["src/dev"
+                                  "script"]}}
 
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
@@ -66,7 +65,7 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/main.js"
+                :compiler {:output-to "resources/public/js/main.js"
                            :main reactrails-in-reagent.core
                            :optimizations :advanced
                            :pretty-print false}}]}

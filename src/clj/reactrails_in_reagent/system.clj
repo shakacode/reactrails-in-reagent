@@ -52,7 +52,3 @@
 
 
 
-(defn -main [& _]
-  (let [conf (config)
-        sys (make-system conf)]
-    (component/start sys)))
