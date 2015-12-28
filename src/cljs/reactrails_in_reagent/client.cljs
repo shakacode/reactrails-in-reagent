@@ -1,6 +1,5 @@
 (ns reactrails-in-reagent.client
   (:require
-    [schema.core :as s :include-macros true]
     [schema.coerce :as coerce]
     [schema.utils :as s-utils]
     [reactrails-in-reagent.routes :as routes]
@@ -8,9 +7,7 @@
     [cljs.core.async :as async]
     [clojure.set]
     [ajax.core :as ajax]
-    [reactrails-in-reagent.routes :as routes])
-  (:import
-    [goog.net XhrIo]))
+    [reactrails-in-reagent.routes :as routes]))
 
 (enable-console-print!)
 
@@ -84,5 +81,6 @@
         (fn [error-response]
           (async/close! channel-res)
           (error-handler error-response))]
+
     [channel-res handler' error-handler']))
 
