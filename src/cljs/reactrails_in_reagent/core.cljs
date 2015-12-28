@@ -49,7 +49,7 @@
   (views/render! app-state)
   (d/start-dispatcher! app-state)
   (d/dispatch! (actions/->GetAllComments))
-  ;(start-fetching! 10000)
+  (start-fetching! 10000)
   )
 
 
@@ -61,22 +61,3 @@
   (views/render! app-state)
   )
 
-
-(comment
-  (def toto (async/chan))
-
-  (async/put! toto 1)
-  (async/put! toto 2)
-  (async/put! toto 3)
-
-  (async/close! toto)
-
-  (async/take! toto #(println %))
-
-  (->> @app-state
-       :comments
-       ;(sort-by :comment/created)
-       type)
-
-
-  )
