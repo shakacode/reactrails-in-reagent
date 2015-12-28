@@ -8,7 +8,6 @@
     [bidi.ring]))
 
 
-;; Define a handler
 (def handler-dev (-> routes/routes
                      (routes/inject-handlers handler/end-points->handlers)
                      (bidi.ring/make-handler)))
