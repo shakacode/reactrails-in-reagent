@@ -43,7 +43,6 @@
 
 
 (defn send-new-comment! [comment handler & [error-handler]]
-  (println "sending with 2")
   (let [error-handler (or error-handler default-error-handler)]
     (ajax/POST comment-list-route
                {:format :json
