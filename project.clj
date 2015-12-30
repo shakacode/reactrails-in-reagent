@@ -4,6 +4,14 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
+  :min-lein-version "2.0.0"
+
+  ;; TODO createthe heroku app
+  ;; TODO recover env variables see heroku docs
+  ;; TODO config app to use env vars
+  ;; TODO test loacal
+  ;; TODO test on heroku !!!!
+
   :jvm-opts ^:replace ["-Xms512m" "-Xmx512m" "-server"]
 
   :dependencies [[org.clojure/clojure "1.7.0"]
@@ -21,10 +29,14 @@
                  [prismatic/schema "1.0.4"]
                  [com.stuartsierra/component "0.2.3"]
                  [cheshire "5.5.0"]
-                 [cljs-ajax "0.5.2"]]
+                 [cljs-ajax "0.5.2"]
+                 [environ "1.0.1"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
+            [lein-environ "1.0.1"]
             [lein-figwheel "0.5.0-1"]]
+
+  :hooks [leiningen.cljsbuild environ.leiningen.hooks]
 
 
   :source-paths ["src/clj"
@@ -32,6 +44,8 @@
                  "src/cljc"]
 
   :test-paths ["test"]
+
+  :uberjar-name "reactrails-in-reagent-standalone.jar"
 
   :main reactrails-in-reagent.core
 
@@ -44,13 +58,29 @@
                                   [compojure "1.0.2"]]
 
                    :source-paths ["src/dev"
-                                  "script"]}}
+                                  "script"]}
+
+             :uberjar {:aot true}
+             :production {:env {:production true}}}
 
 
-  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
+  :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                                    "resources/public/js/main.js"
+                                    "target"]
 
   :cljsbuild {:builds
-              [{:id "dev"
+              [;; This next build is an compressed minified build for
+               ;; production. You can build this with:
+               ;; lein cljsbuild once min
+               {:id "min"
+                ;:jar true
+                :source-paths ["src/cljs" "src/cljc"]
+                :compiler {:output-to "resources/public/js/main.js"
+                           :main reactrails-in-reagent.core
+                           :optimizations :advanced
+                           :pretty-print false}}
+
+               {:id "dev"
                 :source-paths ["src/cljs" "src/cljc"]
 
                 :figwheel {:on-jsload "reactrails-in-reagent.core/on-js-reload"}
@@ -59,16 +89,7 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/main.js"
                            :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true}}
-               ;; This next build is an compressed minified build for
-               ;; production. You can build this with:
-               ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/main.js"
-                           :main reactrails-in-reagent.core
-                           :optimizations :advanced
-                           :pretty-print false}}]}
+                           :source-map-timestamp true}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default

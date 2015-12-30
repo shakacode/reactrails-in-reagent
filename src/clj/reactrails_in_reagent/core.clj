@@ -1,7 +1,8 @@
 (ns reactrails-in-reagent.core
   (:require
     [reactrails-in-reagent.system :as system]
-    [com.stuartsierra.component :as component]))
+    [com.stuartsierra.component :as component])
+  (:gen-class))
 
 
 
