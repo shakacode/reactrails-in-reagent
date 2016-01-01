@@ -10,3 +10,4 @@ pom.xml.asc
 .idea
 /resources/public/js/compiled
 /resources/public/js/main.js
+.env

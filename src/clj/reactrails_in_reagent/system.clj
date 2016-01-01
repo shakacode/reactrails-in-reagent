@@ -7,6 +7,7 @@
     [reactrails-in-reagent.utils :refer [read-edn-ressource]]
 
     [com.stuartsierra.component :as component]
+    [environ.core :refer [env]]
 
     [ring.middleware.resource :refer [wrap-resource]]))
 
@@ -18,7 +19,7 @@
 (defn config []
   {:db-uri "datomic:mem://example"
    :schema (read-edn-ressource "data/schema.edn")
-   :server-config {:port 8080}
+   :server-config {:port (env :port)}
    :handler-config [routes
                     handler/end-points->handlers
                     handler/end-points->middlewares

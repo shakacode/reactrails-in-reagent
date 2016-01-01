@@ -6,12 +6,6 @@
 
   :min-lein-version "2.0.0"
 
-  ;; TODO createthe heroku app
-  ;; TODO recover env variables see heroku docs
-  ;; TODO config app to use env vars
-  ;; TODO test loacal
-  ;; TODO test on heroku !!!!
-
   :jvm-opts ^:replace ["-Xms512m" "-Xmx512m" "-server"]
 
   :dependencies [[org.clojure/clojure "1.7.0"]
@@ -33,10 +27,7 @@
                  [environ "1.0.1"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-environ "1.0.1"]
             [lein-figwheel "0.5.0-1"]]
-
-  :hooks [leiningen.cljsbuild environ.leiningen.hooks]
 
 
   :source-paths ["src/clj"
@@ -58,10 +49,14 @@
                                   [compojure "1.0.2"]]
 
                    :source-paths ["src/dev"
-                                  "script"]}
+                                  "script"]
+                   }
 
-             :uberjar {:aot true}
-             :production {:env {:production true}}}
+             :uberjar {:aot :all
+                       :hooks [leiningen.cljsbuild]}
+
+             :production {:env {:production true}}
+             }
 
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"

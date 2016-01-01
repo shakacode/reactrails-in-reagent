@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/reactrails-in-reagent-standalone.jar clojure.main -m reactrails-in-reagent.core
+web: java $JVM_OPTS -cp target/reactrails-in-reagent-standalone.jar reactrails_in_reagent.core

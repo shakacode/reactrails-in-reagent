@@ -8,6 +8,7 @@
   (let [{:keys [handler-component options]} component
         handler (:handler handler-component)
         server (web/run handler options)]
+    (println "server options: " options)
     (assoc component
       :server server
       :started? true)))
