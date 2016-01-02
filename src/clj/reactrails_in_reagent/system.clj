@@ -19,7 +19,8 @@
 (defn config []
   {:db-uri         "datomic:mem://example"
    :schema         (read-edn-ressource "data/schema.edn")
-   :server-config  {:port (Integer/parseInt (env :port))}
+   :server-config  {:port (Integer/parseInt (env :port))
+                    :host "0.0.0.0"}
    :handler-config [routes
                     handler/end-points->handlers
                     handler/end-points->middlewares
