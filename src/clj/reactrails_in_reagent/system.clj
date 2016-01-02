@@ -17,9 +17,9 @@
   (comp #(wrap-resource % "public")))
 
 (defn config []
-  {:db-uri "datomic:mem://example"
-   :schema (read-edn-ressource "data/schema.edn")
-   :server-config {:port (env :port)}
+  {:db-uri         "datomic:mem://example"
+   :schema         (read-edn-ressource "data/schema.edn")
+   :server-config  {:port (Integer/parseInt (env :port))}
    :handler-config [routes
                     handler/end-points->handlers
                     handler/end-points->middlewares

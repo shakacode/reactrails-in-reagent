@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/reactrails-in-reagent-standalone.jar reactrails_in_reagent.core
+web: java $JVM_OPTS -jar target/reactrails-in-reagent-standalone.jar
