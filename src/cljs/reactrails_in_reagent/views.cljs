@@ -141,6 +141,6 @@
 
 (defn render! [app-state]
   (r/render-component [app app-state]
-                      (.-body js/document)))
+                      (.getElementById js/document "app")))
 
 

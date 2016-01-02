@@ -26,8 +26,7 @@
                  [cljs-ajax "0.5.2"]
                  [environ "1.0.1"]]
 
-  :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-figwheel "0.5.0-1"]]
+  :plugins [[lein-cljsbuild "1.1.1"]]
 
 
   :source-paths ["src/clj"
@@ -45,6 +44,7 @@
                                   [ring/ring-mock "0.3.0"]
                                   [peridot "0.4.2"]
                                   [juxt/iota "0.2.0"]
+                                  [figwheel-sidecar "0.5.0-1"]
 
                                   [compojure "1.0.2"]]
 
