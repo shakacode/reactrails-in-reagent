@@ -34,7 +34,7 @@
               :placeholder "Say something using Markdown"
               :class "form-control" :name "text"}])
 
-;; The forms here are an adaptation to reagent of the the work of mon-john
+;; The forms here are an adaptation to reagent of the the work of monjohn
 ;; https://github.com/shakacode/reactrails-in-om-next-example/blob/monjohn-master/src/cljs/omnext_to_datomic/components.cljs
 (defn template-form-horizontal [doc]
   [:form {:class    "commentForm form-horizontal"
