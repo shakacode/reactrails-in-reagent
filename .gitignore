@@ -11,3 +11,4 @@ pom.xml.asc
 /resources/public/js/compiled
 /resources/public/js/main.js
 .env
+reactrails-in-reagent.iml
