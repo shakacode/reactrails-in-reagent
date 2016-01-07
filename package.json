@@ -1,0 +1,11 @@
+{
+  "name": "reactrails-in-reagent",
+  "dependencies": {
+    "fs-extra": "^0.26.4",
+    "marked": "0.3.5"
+  },
+  "scripts": {
+    "postinstall": "node script/install-jslibs.js",
+    "clean": "node script/uninstall-jslibs.js"
+  }
+}

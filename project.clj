@@ -28,16 +28,17 @@
 
   :plugins [[lein-cljsbuild "1.1.1"]]
 
-
-  :source-paths ["src/clj"
-                 "src/cljs"
-                 "src/cljc"]
+  :source-paths ["src/clj" "src/cljc"]
 
   :test-paths ["test"]
 
   :uberjar-name "reactrails-in-reagent-standalone.jar"
 
   :main reactrails-in-reagent.core
+
+  :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                                    "resources/public/js/main.js"
+                                    "target"]
 
   :profiles {:dev {:dependencies [[reloaded.repl "0.2.1"]
                                   [ring/ring-devel "1.4.0"]
@@ -49,26 +50,18 @@
                                   [compojure "1.0.2"]]
 
                    :source-paths ["src/dev"
-                                  "script"]
-                   }
+                                  "script"]}
 
              :uberjar {:aot :all
                        :hooks [leiningen.cljsbuild]}
 
-             :production {:env {:production true}}
-             }
-
-
-  :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                    "resources/public/js/main.js"
-                                    "target"]
+             :production {:env {:production true}}}
 
   :cljsbuild {:builds
               [;; This next build is an compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
                {:id "min"
-                ;:jar true
                 :source-paths ["src/cljs" "src/cljc"]
                 :compiler {:output-to "resources/public/js/main.js"
                            :main reactrails-in-reagent.core
@@ -86,34 +79,4 @@
                            :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true}}]}
 
-  :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
-             ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1"
-
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
-
-             ;; Start an nREPL server into the running figwheel process
-             ;; :nrepl-port 7888
-
-             ;; Server Ring Handler (optional)
-             ;; if you want to embed a ring handler into the figwheel http-kit
-             ;; server, this is for simple ring servers, if this
-             ;; doesn't work for you just run your own server :)
-             ;; :ring-handler hello_world.server/handler
-
-             ;; To be able to open files in your editor from the heads up display
-             ;; you will need to put a script on your path.
-             ;; that script will have to take a file path and a line number
-             ;; ie. in  ~/bin/myfile-opener
-             ;; #! /bin/sh
-             ;; emacsclient -n +$2 $1
-             ;;
-             ;; :open-file-command "myfile-opener"
-
-             ;; if you want to disable the REPL
-             ;; :repl false
-
-             ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-             }
-  )
+  :figwheel {:css-dirs ["resources/public/css"]})

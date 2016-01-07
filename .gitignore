@@ -8,6 +8,7 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 .idea
-/resources/public/js/compiled
-/resources/public/js/main.js
+resources/public/js/*
 .env
+reactrails-in-reagent.iml
+/node_modules
