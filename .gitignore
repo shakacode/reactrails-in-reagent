@@ -11,4 +11,4 @@ pom.xml.asc
 resources/public/js/*
 .env
 reactrails-in-reagent.iml
-node_modules
+/node_modules
