@@ -34,7 +34,7 @@
 
 (def comment-matcher
   {schemas/Comment replace-with-peoper-keys
-   schemas/date-schema schemas/date-matcher})
+   schemas/date-schema schemas/date-coercion})
 
 (def comment-coercer (coerce/coercer schemas/Comment comment-matcher))
 (def comment-list-coercer (coerce/coercer schemas/Comment-list comment-matcher))

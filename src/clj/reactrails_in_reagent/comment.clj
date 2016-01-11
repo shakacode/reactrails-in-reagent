@@ -6,7 +6,7 @@
     [liberator.core :refer [resource]]
     [datomic.api :as d]
     [reactrails-in-reagent.routes :as routes]
-    [reactrails-in-reagent.comment.schemas :refer [New-comment]]
+    [reactrails-in-reagent.comment.schemas :refer [New-comment long-schema long-coercion ]]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.json :refer [wrap-json-params]]))
@@ -48,11 +48,7 @@
                               "text" :comment/text}))
 
 (def comment-params-coercer
-  (coerce/coercer
-    New-comment
-    (fn [s]
-      (if (= s New-comment)
-        #(proper-keys %)))))
+  (coerce/coercer New-comment {New-comment #(proper-keys %)}))
 
 (defn malformed-comment-list-params? [ctx]
   (let [request (:request ctx)
@@ -65,9 +61,8 @@
       :get false)))
 
 (defn response-comment-list [ctx]
-  (let [conn (get-in ctx [:request :conn])
-        comments (get-all-comments conn)]
-    comments))
+  (let [conn (get-in ctx [:request :conn])]
+    (get-all-comments conn)))
 
 (defn post-comment! [ctx]
   (let [comment (::comment ctx)
@@ -89,12 +84,11 @@
 
 
 
-(s/defschema comment-entry-params-schema {(s/required-key :id) Long})
+(s/defschema comment-entry-params-schema {(s/required-key :id) long-schema})
 
 (def comment-entry-params-coercer
   (coerce/coercer comment-entry-params-schema
-                  {Long (fn [possible-long]
-                          ((coerce/safe #(Long/parseLong %)) possible-long))}))
+                  {Long long-coercion}))
 
 (defn malformed-comment-entry-params? [ctx]
   (let [request (:request ctx)

@@ -1,6 +1,7 @@
 (ns reactrails-in-reagent.comment.schemas
   (:require
     [schema.core :as s]
+    [schema.coerce :as coerce]
     [clojure.set]
 
     #?(:clj [clojure.instant :as instant])))
@@ -22,5 +23,19 @@
 (s/defschema Comment-list [Comment])
 
 
-(def date-matcher #?(:clj  instant/read-instant-date
-                     :cljs #(js/Date. %)))
+(def date-coercion #?(:clj  instant/read-instant-date
+                      :cljs #(js/Date. %)))
+
+(defn try-apply [f & args]
+  (try
+    (apply f args)
+    (catch #?(:clj Exception :cljs :default) _
+      nil)))
+
+#?(:clj
+   (defn parse-long [s]
+     (Long/parseLong s)))
+
+(def long-coercion #?(:clj (coerce/first-matcher [#(try-apply long %) #(try-apply parse-long %)])
+                      :cljs js/Number))
+
