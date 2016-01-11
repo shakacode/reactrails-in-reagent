@@ -71,7 +71,7 @@
 (def comment-coercer
   (coerce/coercer schemas/Comment
                   {schemas/Comment #(json/parse-string % true)
-                   schemas/date-schema schemas/date-matcher}))
+                   schemas/date-schema schemas/date-coercion}))
 
 (defn test-adding-wellformed [app comment]
   (let [res (add-comment! app comment)
@@ -132,7 +132,7 @@
 (def comment-list-coercer
   (coerce/coercer schemas/Comment-list
                   {schemas/Comment-list #(json/parse-string % true)
-                   schemas/date-schema schemas/date-matcher}))
+                   schemas/date-schema schemas/date-coercion}))
 
 (defn- select-comment [author cssss]
   (select [ALL #(= author (:comment/author %))] cssss))

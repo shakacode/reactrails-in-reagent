@@ -12,3 +12,4 @@ resources/public/js/*
 .env
 reactrails-in-reagent.iml
 /node_modules
+.gorilla-port

@@ -49,6 +49,8 @@
 
                                   [compojure "1.0.2"]]
 
+                   :plugins [[lein-gorilla "0.3.5"]]
+
                    :source-paths ["src/dev"
                                   "script"]}
 
