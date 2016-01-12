@@ -4,11 +4,24 @@
     [reactrails-in-reagent.routes :as routes]
     [com.stuartsierra.component :as component]
     [ring.middleware.json :refer [wrap-json-params]]
+    [ring.util.response :refer [resource-response]]
+    [com.rpl.specter :as specter]
     [clojure.pprint :as pp]
     [bidi.ring]))
 
 
-(def handler-dev (-> routes/routes
+(defn devcards-handler [_]
+  (-> "cards/cards-index.html"
+      resource-response
+      (assoc :headers {"Content-Type" "text/html"})))
+
+(def routes (specter/setval [specter/LAST specter/BEGINNING]
+                            [["/devcards" devcards-handler]]
+                            routes/routes))
+
+
+
+(def handler-dev (-> routes
                      (routes/inject-handlers handler/end-points->handlers)
                      (bidi.ring/make-handler)))
 

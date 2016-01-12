@@ -11,7 +11,8 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.async "0.2.374"]
-                 [reagent "0.5.1"]
+                 [reagent "0.5.1" :exclusions [cljsjs/react]]
+                 [cljsjs/react "0.14.0-1"]
                  [reagent-forms "0.5.13"]
                  [com.datomic/datomic-free "0.9.5344"]
                  [bidi "1.23.1"]
@@ -21,12 +22,12 @@
                  [ring/ring-json "0.4.0"]
                  [com.rpl/specter "0.9.0"]
                  [prismatic/schema "1.0.4"]
-                 [com.stuartsierra/component "0.2.3"]
+                 [com.stuartsierra/component "0.3.1"]
                  [cheshire "5.5.0"]
                  [cljs-ajax "0.5.2"]
                  [environ "1.0.1"]]
 
-  :plugins [[lein-cljsbuild "1.1.1"]]
+  :plugins [[lein-cljsbuild "1.1.1" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljc"]
 
@@ -45,14 +46,12 @@
                                   [ring/ring-mock "0.3.0"]
                                   [peridot "0.4.2"]
                                   [juxt/iota "0.2.0"]
-                                  [figwheel-sidecar "0.5.0-1"]
-
-                                  [compojure "1.0.2"]]
+                                  [figwheel-sidecar "0.5.0-1" :exclusions [com.stuartsierra/component]]
+                                  [devcards "0.2.1"]]
 
                    :plugins [[lein-gorilla "0.3.5"]]
-
-                   :source-paths ["src/dev"
-                                  "script"]}
+                   :source-paths ["src/dev" "script"]
+                   :resource-paths ["dev-resources"]}
 
              :uberjar {:aot :all
                        :hooks [leiningen.cljsbuild]}
