@@ -30,7 +30,7 @@
 
   :source-paths ["src/clj" "src/cljc"]
 
-  :test-paths ["test"]
+  :test-paths ["test/backend"]
 
   :uberjar-name "reactrails-in-reagent-standalone.jar"
 
@@ -72,9 +72,7 @@
 
                {:id "dev"
                 :source-paths ["src/cljs" "src/cljc"]
-
                 :figwheel {:on-jsload "reactrails-in-reagent.core/on-js-reload"}
-
                 :compiler {:main reactrails-in-reagent.core
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/main.js"
