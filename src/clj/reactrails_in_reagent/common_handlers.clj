@@ -10,7 +10,8 @@
 
 (defn miss-404 [request]
   (assoc (resource-response (str "html/404.html") {:root "public"})
-    :headers {"Content-Type" "text/html"}))
+    :headers {"Content-Type" "text/html"}
+    :status 404))
 
 
 (def end-points->handlers
