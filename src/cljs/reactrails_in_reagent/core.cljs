@@ -44,7 +44,7 @@
 
 
 
-(defn main [& args]
+(defn start-app! []
   (reset! app-state initial-state)
   (views/render! app-state)
   (d/start-dispatcher! app-state)
@@ -52,8 +52,13 @@
   (start-fetching! 10000)
   )
 
+(defn main []
+  ;; conditionally start the app based on the presence of #app
+  ;; node is on the page
+  (when (.getElementById js/document "app")
+    (start-app!)))
 
-(defonce started (main))
+(main)
 
 
 (defn on-js-reload []
