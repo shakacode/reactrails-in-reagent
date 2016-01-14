@@ -39,11 +39,12 @@
 
 
 
-(def config {:db-uri "datomic:mem://example"
-             :schema (read-edn-ressource "data/schema.edn")
-             :seed-data (read-edn-ressource "data/seed.edn")
-             :server-config {:port 8080}
-             :handler-config [routes middleware]})
+(defn config []
+  {:db-uri "datomic:mem://example"
+   :schema (read-edn-ressource "data/schema.edn")
+   :seed-data (read-edn-ressource "data/seed.edn")
+   :server-config {:port 8080}
+   :handler-config [routes middleware]})
 
 
 (defn make-system-map [config]

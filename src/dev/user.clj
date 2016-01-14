@@ -11,7 +11,7 @@
 
 
 (defn install-dev []
-  (reloaded.repl/set-init! #(make-system config)))
+  (reloaded.repl/set-init! #(make-system (config))))
 
 
 (defn install-prod []
