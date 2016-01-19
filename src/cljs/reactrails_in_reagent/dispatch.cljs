@@ -8,17 +8,20 @@
 
 ;; greatly inspired from https://github.com/krisajenkins/petrol
 
-(defprotocol Message
-  (process-message* [message app]
-                   "Given a message, take the current app state and
-                   return the new one. In essense this is a reducing
-                   function."))
+(defprotocol Action
+  (process-action* [action app]
+                   "Given an action and an app state,
+                   returns a new app state. In essense this is a reducing
+                   function with inverted arguments"))
 
-(defn process-message [app message]
-  (process-message* message app))
+(defn apply-action
+  "Convenience function to reduce actions more easily."
+  [app message]
+  (process-action* message app))
 
 (defprotocol EventSource
-  (watch-channels [source]))
+  (watch-channels [source]
+                  "Returns a set of channels that will feed the dispatch loop."))
 
 
 (def ^:private !dispatch-state (atom {:channels #{}
@@ -38,11 +41,13 @@
   (swap! !dispatch-state update :channels #(disj % c)))
 
 (defn- apply-message-consequence! [!app-db m]
-  (swap! !app-db process-message m))
+  (swap! !app-db apply-action m))
 
 (defn- add-event-source! [source]
   (swap! !dispatch-state update :channels #(set/union % (watch-channels source))))
 
+
+;; TODO refactor in a way that we can pass the dispatch loop's state as a parameter.
 (defn start-dispatcher! [!app-db]
   (let [dispatch-c (async/chan)]
 
@@ -58,7 +63,7 @@
           (when (nil? message)
             (remove-closed-channel! channel))
 
-          (when (satisfies? Message message)
+          (when (satisfies? Action message)
             (apply-message-consequence! !app-db message))
 
           (when (satisfies? EventSource message)

@@ -5,20 +5,20 @@
 
 
 (defrecord SelectFormStyle [style]
-  d/Message
-  (process-message* [this app]
+  d/Action
+  (process-action* [this app]
     (assoc app :nav/index (:style this))))
 
 (defrecord ReceivedComment [comment]
-  d/Message
-  (process-message* [this app]
+  d/Action
+  (process-action* [this app]
     (let [c (:comment this)]
       (update app :comments conj c))))
 
 
 (defrecord ReceivedAllComments [comments]
-  d/Message
-  (process-message* [this app]
+  d/Action
+  (process-action* [this app]
     (let [current-comments (:comments app)
           with-new-ones (reduce conj current-comments (:comments this))]
       (assoc app :comments with-new-ones))))

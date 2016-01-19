@@ -11,15 +11,16 @@
 (enable-console-print!)
 
 
-(defn compare-dates [comment1 comment2]
+(defn compare-comments [comment1 comment2]
   (->> [comment1 comment2]
        (map (juxt :comment/created :db/id))
        reverse
        (apply compare)))
 
+(def empty-comment-set (sorted-set-by compare-comments))
 
 (def initial-state {:nav/index 0
-                    :comments (sorted-set-by compare-dates)})
+                    :comments empty-comment-set})
 
 (defonce app-state (r/atom initial-state))
 

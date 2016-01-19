@@ -46,6 +46,8 @@
    :server-config {:port 8080}
    :handler-config [routes middleware]})
 
+;; TODO See if there is a way to use suspendable to recompute the handler
+;; TODO Reuse the prod system in which to merge the new handler
 
 (defn make-system-map [config]
   (component/system-map

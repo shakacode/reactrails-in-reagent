@@ -12,13 +12,16 @@
     ))
 
 
+(defn wrap-prevent-default [event-handler]
+  (fn [event]
+    (.preventDefault event)
+    (event-handler event)))
 
-
-(defn submit [event doc-atom]
-  (.preventDefault event)
-  (d/dispatch! (actions/->NewComment @doc-atom))
-  (reset! doc-atom {}))
-
+(defn submit-fn [!doc]
+  (wrap-prevent-default
+    (fn [_]
+      (d/dispatch! (actions/->NewComment @!doc))
+      (reset! !doc {}))))
 
 (def input-name
   [:input {:field :text
@@ -36,9 +39,9 @@
 
 ;; The forms here are an adaptation to reagent of the the work of monjohn
 ;; https://github.com/shakacode/reactrails-in-om-next-example/blob/monjohn-master/src/cljs/omnext_to_datomic/components.cljs
-(defn template-form-horizontal [doc]
+(defn template-form-horizontal [!doc]
   [:form {:class    "commentForm form-horizontal"
-          :onSubmit #(submit % doc)}
+          :onSubmit (submit-fn !doc)}
    [:div {:class "form-group"}
     [:label {:class "control-label col-sm-2"} "Name"]
     [:div {:class "col-sm-10"}
@@ -52,9 +55,9 @@
      [:input {:type "submit" :class "btn btn-primary" :value "Post"}]]]])
 
 
-(defn template-form-stacked [doc]
+(defn template-form-stacked [!doc]
   [:form {:class    "commentForm "
-          :onSubmit #(submit % doc)}
+          :onSubmit (submit-fn !doc)}
    [:div {:class "form-group"}
     [:label {:class "control-label "} "Name"]
     input-name]
@@ -63,8 +66,9 @@
     comment-textarea]
    [:input {:type "submit" :class "btn btn-primary" :value "Post"}]])
 
-(defn template-form-inline [doc]
-  [:form {:class "commentForm" :onSubmit #(submit % doc)}
+(defn template-form-inline [!doc]
+  [:form {:class "commentForm"
+          :onSubmit (submit-fn !doc)}
    [:div {:class "form-group"}
     [:label {:class "control-label "} "Inline Form"]
     [:div {:class "wrapper"}
@@ -76,46 +80,46 @@
       [:div {:class "col-xs-1"}
        [:input {:type "submit" :class "btn btn-primary" :value "Post"}]]]]]])
 
-
-
 (defn form-style-selector [index]
   [:nav
    [:ul {:class "nav nav-pills"}
-    [:li (if (= 0 index) {:class "active"})
-     [:a {:onClick #(d/dispatch! (actions/->SelectFormStyle 0))}
+    [:li (if (= :horizontal index) {:class "active"})
+     [:a {:onClick (wrap-prevent-default
+                     #(d/dispatch! (actions/->SelectFormStyle :horizontal)))}
       "Horizontal Form"]]
-    [:li (if (= 1 index) {:class "active"})
-     [:a {:onClick #(d/dispatch! (actions/->SelectFormStyle 1))}
+    [:li (if (= :stacked index) {:class "active"})
+     [:a {:onClick (wrap-prevent-default
+                     #(d/dispatch! (actions/->SelectFormStyle :stacked)))}
       "Stacked Form"]]
-    [:li (if (= 2 index) {:class "active"})
-     [:a {:onClick #(d/dispatch! (actions/->SelectFormStyle 2))}
+    [:li (if (= :inline index) {:class "active"})
+     [:a {:onClick (wrap-prevent-default
+                     #(d/dispatch! (actions/->SelectFormStyle :inline)))}
       "Inline Form"]]]])
 
 
-(let [doc (r/atom {})]
-  (defn form-horizontal []
-    (fn []
-      [r-forms/bind-fields (template-form-horizontal doc) doc]))
 
-  (defn form-stacked []
-    (fn []
-      [r-forms/bind-fields (template-form-stacked doc) doc]))
+(defn form-horizontal [doc]
+  (fn []
+    [r-forms/bind-fields (template-form-horizontal doc) doc]))
 
-  (defn form-inline []
-    (fn []
-      [r-forms/bind-fields (template-form-inline doc) doc])))
+(defn form-stacked [doc]
+  (fn []
+    [r-forms/bind-fields (template-form-stacked doc) doc]))
 
+(defn form-inline [doc]
+  (fn []
+    [r-forms/bind-fields (template-form-inline doc) doc]))
 
-(defn form [index]
-  (let [form (case @index
-               0 form-horizontal
-               1 form-stacked
-               2 form-inline)]
-    [:div [form]]))
+(defn make-form-state [app-state]
+  (r/cursor app-state [::comment-form]))
 
-(defn state-view [app-state]
-  [:pre
-   (with-out-str (pp/pprint @app-state))])
+(defn form [app-state]
+  (let [form-view (case (:nav/index @app-state)
+               :horizontal form-horizontal
+               :stacked form-stacked
+               :inline form-inline
+               form-horizontal)]
+    [:div [form-view (make-form-state app-state)]]))
 
 
 (defn comment-view [c]
@@ -135,9 +139,8 @@
 (defn app [app-state]
   [:div
    [form-style-selector (:nav/index @app-state)]
-   [form (r/cursor app-state [:nav/index])]
+   [form app-state]
    [comments (r/cursor app-state [:comments])]
-   ;[state-view app-state]
    ])
 
 (defn render! [app-state]
