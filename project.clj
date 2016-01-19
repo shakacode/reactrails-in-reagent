@@ -1,8 +1,30 @@
+(do (require '[clojure.edn :as edn])
+    (def cljs-test-build
+      {:id           "test"
+       :source-paths ["src/cljs" "src/cljc" "test/frontend"]
+       :compiler     {:main          "test.runner"
+                      :output-to     "resources/public/js/compiled/test.js"
+                      :output-dir    "resources/public/js/compiled/test_out"
+                      :optimizations :none}})
+    (def cljs-test-min
+      {:id           "test-min"
+       :source-paths ["src/cljs" "src/cljc" "test/frontend"]
+       :compiler     {:main          "test.runner"
+                      :output-to     "resources/public/js/compiled/test-min.js"
+                      :pretty-print false
+                      :optimizations :advanced}})
+    (def cljs-dev-builds (-> "figwheel.edn"
+                           slurp
+                           edn/read-string
+                           :builds
+                           (conj cljs-test-build cljs-test-min))))
+
+
 (defproject reactrails-in-reagent "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
   :min-lein-version "2.0.0"
 
@@ -29,53 +51,47 @@
 
   :plugins [[lein-cljsbuild "1.1.1" :exclusions [org.clojure/clojure]]]
 
-  :source-paths ["src/clj" "src/cljc"]
-
-  :test-paths ["test/backend"]
-
-  :uberjar-name "reactrails-in-reagent-standalone.jar"
-
-  :main reactrails-in-reagent.core
-
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "resources/public/js/main.js"
                                     "target"]
 
-  :profiles {:dev {:dependencies [[reloaded.repl "0.2.1"]
+  :source-paths ["src/clj" "src/cljc"]
+
+  :profiles
+  {:cljs-dev   {:cljsbuild {:builds ~cljs-dev-builds}}
+   :cljs-prod  {:cljsbuild {:builds [{:id           "min"
+                                      :source-paths ["src/cljs" "src/cljc"]
+                                      :compiler     {:main          reactrails-in-reagent.core
+                                                     :output-to     "resources/public/js/main.js"
+                                                     :optimizations :advanced
+                                                     :pretty-print  false}}]}}
+   :dev        [:cljs-dev
+                :cljs-prod
+                {:dependencies   [[reloaded.repl "0.2.1"]
                                   [ring/ring-devel "1.4.0"]
                                   [ring/ring-mock "0.3.0"]
                                   [peridot "0.4.2"]
                                   [juxt/iota "0.2.0"]
-                                  [figwheel-sidecar "0.5.0-1" :exclusions [com.stuartsierra/component]]
-                                  [devcards "0.2.1"]]
+                                  [com.cemerick/piggieback "0.2.1"]
+                                  [org.clojure/tools.nrepl "0.2.10"]
+                                  [figwheel-sidecar "0.5.0-3" :exclusions [com.stuartsierra/component]]
+                                  [devcards "0.2.1"]
+                                  [karma-reporter "1.0.0"]]
+                 :repl-options   {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                 :plugins        [[lein-gorilla "0.3.5"]
+                                  [lein-figwheel "0.5.0-3"]
+                                  [lein-pprint "1.1.2"]]
+                 :source-paths   ["src/dev"]
+                 :test-paths     ["test/backend"]
+                 :resource-paths ["dev-resources"]}]
 
-                   :plugins [[lein-gorilla "0.3.5"]]
-                   :source-paths ["src/dev" "script"]
-                   :resource-paths ["dev-resources"]}
+   :uberjar    [:cljs-prod
+                {:uberjar-name "reactrails-in-reagent-standalone.jar"
+                 :main         reactrails-in-reagent.core
+                 :aot          :all
+                 :hooks        [leiningen.cljsbuild]}]
 
-             :uberjar {:aot :all
-                       :hooks [leiningen.cljsbuild]}
+   :production {:env {:production true}}}
 
-             :production {:env {:production true}}}
-
-  :cljsbuild {:builds
-              [;; This next build is an compressed minified build for
-               ;; production. You can build this with:
-               ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src/cljs" "src/cljc"]
-                :compiler {:output-to "resources/public/js/main.js"
-                           :main reactrails-in-reagent.core
-                           :optimizations :advanced
-                           :pretty-print false}}
-
-               {:id "dev"
-                :source-paths ["src/cljs" "src/cljc"]
-                :figwheel {:on-jsload "reactrails-in-reagent.core/on-js-reload"}
-                :compiler {:main reactrails-in-reagent.core
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/main.js"
-                           :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true}}]}
-
-  :figwheel {:css-dirs ["resources/public/css"]})
+  :figwheel {:css-dirs ["resources/public/css"]}
+  )
