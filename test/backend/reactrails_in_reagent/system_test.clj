@@ -69,13 +69,3 @@
 
 (defn stop! [ref]
   (swap! ref component/stop-system))
-
-
-
-
-
-
-
-
-
-

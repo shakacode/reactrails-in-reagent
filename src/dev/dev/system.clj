@@ -1,10 +1,10 @@
 (ns dev.system
   (:require
+    [reactrails-in-reagent.system :as system]
     [reactrails-in-reagent.datomic :as datomic]
-    [reactrails-in-reagent.server :as server]
-    [dev.handler :as handler]
     [reactrails-in-reagent.routes :refer [routes]]
     [reactrails-in-reagent.utils :refer [read-edn-ressource]]
+    [dev.handler :as handler]
 
 
     [com.stuartsierra.component :as component]
@@ -35,47 +35,30 @@
         wrap-params
         #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
-
-
-
-
 (defn config []
-  {:db-uri "datomic:mem://example"
-   :schema (read-edn-ressource "data/schema.edn")
-   :seed-data (read-edn-ressource "data/seed.edn")
-   :server-config {:port 8080}
-   :handler-config [routes middleware]})
+  (-> (system/config)
+      (assoc
+        :seed-data (read-edn-ressource "data/seed.edn")
+        :handler-config [routes middleware])))
 
-;; TODO See if there is a way to use suspendable to recompute the handler
-;; TODO Reuse the prod system in which to merge the new handler
+;; TODO See if there is a way to use suspendable to recompute the handle
 
 (defn make-system-map [config]
-  (component/system-map
-    :db
-    (datomic/make-database (:db-uri config))
+  (-> system/system-map
+      (assoc :seeder
+             #(datomic/make-seeder (:seed-data %))
 
-    :schema-installer
-    (datomic/make-schema-installer (:schema config))
+             :web-request-handler
+             #(apply handler/make-dev-handler (:handler-config %)))
+      (system/apply-config config)
+      (component/map->SystemMap)))
 
-    :seeder
-    (datomic/make-seeder (:seed-data config))
-
-    :web-request-handler
-    (apply handler/make-dev-handler (:handler-config config))
-
-    :webserver
-    (server/make-web-server (:server-config config))))
-
-(def dependency-map
-  {:schema-installer {:database :db}
-   :seeder {:database :db
-            :schema-installer :schema-installer}
-   :web-request-handler {:database :db}
-   :webserver {:handler-component :web-request-handler}})
+(defn dependency-map []
+  (assoc (system/dependency-map)
+    :seeder {:database :db
+             :schema-installer :schema-installer}))
 
 (defn make-system [config]
   (-> (make-system-map config)
-      (component/system-using dependency-map)))
-
-
+      (component/system-using (dependency-map))))
 

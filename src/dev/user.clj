@@ -1,7 +1,7 @@
 (ns user
   (:require
     [reloaded.repl :refer [system init start stop go]]
-    [dev.system :refer [make-system config]]
+    [dev.system :as dev]
     [reactrails-in-reagent.system :as prod]
 
     [datomic.api :as d]
@@ -14,7 +14,7 @@
 
 
 (defn install-dev []
-  (reloaded.repl/set-init! #(make-system (config))))
+  (reloaded.repl/set-init! #(dev/make-system (dev/config))))
 
 (defn install-prod []
   (reloaded.repl/set-init! #(prod/make-system (prod/config))))

@@ -160,7 +160,3 @@
   (testing "with dev handler" (test-fetching-all-comments (handler-dev)))
   (testing "with prod handler" (test-fetching-all-comments (handler-prod))))
 
-
-
-
-;(t/run-tests)

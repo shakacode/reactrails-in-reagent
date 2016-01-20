@@ -27,20 +27,29 @@
                     middleware]})
 
 
+(def system-map
+  {:db
+   #(datomic/make-database (:db-uri %))
+
+   :schema-installer
+   #(datomic/make-schema-installer (:schema %))
+
+   :web-request-handler
+   #(apply handler/make-handler (:handler-config %))
+
+   :webserver
+   #(server/make-web-server (:server-config %))})
+
+(defn apply-config [sys-map config]
+  (reduce-kv (fn [acc k v]
+               (assoc acc k (v config)))
+             {}
+             sys-map))
 
 (defn make-system-map [config]
-  (component/system-map
-    :db
-    (datomic/make-database (:db-uri config))
-
-    :schema-installer
-    (datomic/make-schema-installer (:schema config))
-
-    :web-request-handler
-    (apply handler/make-handler (:handler-config config))
-
-    :webserver
-    (server/make-web-server (:server-config config))))
+  (-> system-map
+      (apply-config config)
+      (component/map->SystemMap )))
 
 (defn dependency-map []
   {:schema-installer {:database :db}
