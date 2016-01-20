@@ -11,8 +11,6 @@
 
     [ring.middleware.resource :refer [wrap-resource]]))
 
-
-
 (defn middleware [_]
   (comp #(wrap-resource % "public")))
 

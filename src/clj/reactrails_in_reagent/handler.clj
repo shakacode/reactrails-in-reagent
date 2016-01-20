@@ -5,7 +5,6 @@
     [reactrails-in-reagent.routes :as routes]
     [bidi.ring]
     [com.stuartsierra.component :as component]
-
     [liberator.representation]
     [cheshire.core :refer [generate-string]]))
 
