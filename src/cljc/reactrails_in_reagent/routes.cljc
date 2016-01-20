@@ -4,49 +4,26 @@
     [com.rpl.specter :as s]
     [com.rpl.specter.protocols]))
 
-;; patch specter so that it behaves the same way for symbols than it does for keywords in paths.
+(def index-route [(bidi/alts "" "/") 'index])
 
+(def missed-route [true 'miss-404])
 
+(def comments-routes ["/comments" {(bidi/alts "" "/") 'comments/comment-list
+                                   ["/" :id]          'comments/comment-entry}])
 
-
-(def comments-routes  ["/comments" {(bidi/alts "" "/") 'comments/comment-list
-                                    ["/" :id] 'comments/comment-entry}])
-
-
-
-(def routes ["" [[(bidi/alts "" "/") 'index]
+(def routes ["" [index-route
                  comments-routes
-                 [true 'miss-404]]])
-
+                 missed-route]])
 
 (defn path-for [endpoint-name & params]
   (apply bidi/path-for routes endpoint-name params))
 
+(def endpoints-path (s/walker symbol?))
 
-#?(:clj
-   (do
-     (extend-type clojure.lang.Symbol
-       com.rpl.specter.protocols/StructurePath
-       (select* [kw structure next-fn]
-         (next-fn (get structure kw)))
-       (transform* [kw structure next-fn]
-         (assoc structure kw (next-fn (get structure kw)))
-         ))
-
-
-     (def endpoints-path (s/walker symbol?))
-
-     (defn endpoints [routes]
-       "Returns a list of endpoints."
-       (s/select endpoints-path routes))
-
-
-
-
-     (defn inject-handlers [routes endpoints->handler]
-       "Walks the routes datastructure and replaces endpoints names (symbols) with
-       the actual handler."
-       (s/transform endpoints-path
-                    (fn [v] (get endpoints->handler v v))
-                    routes))))
+(defn inject-handlers [routes endpoints->handler]
+  "Walks the routes datastructure and replaces endpoints names (symbols) with
+  the actual handlers for the endpoints."
+  (s/transform endpoints-path
+               (fn [v] (get endpoints->handler v v))
+               routes))
 
