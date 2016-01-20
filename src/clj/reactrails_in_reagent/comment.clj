@@ -42,7 +42,7 @@
 ;; ----------------------------------------------------------------------------
 ;; Resources definition
 
-
+;; Comment-list resource
 (defn- proper-keys [c]
   (clojure.set/rename-keys c {"author" :comment/author
                               "text" :comment/text}))
@@ -83,7 +83,7 @@
              :post-redirect? post-redirection}))
 
 
-
+;; comment-entry resource
 (s/defschema comment-entry-params-schema {(s/required-key :id) long-schema})
 
 (def comment-entry-params-coercer
@@ -109,8 +109,6 @@
 (defn response-comment-entry [ctx]
   (::comment ctx))
 
-
-
 (def comment-entry
   (resource {:available-media-types ["application/json"]
              :malformed?            malformed-comment-entry-params?
@@ -119,14 +117,14 @@
 
 
 ;; ----------------------------------------------------------------------------
-;; Routes associations
+;; Routes & middleware associations
 
-(defn- middleware-list [handler-component]
+(defn- middleware-comment-list [handler-component]
   (comp wrap-json-params
         wrap-params
         #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
-(defn- middleware-entry [handler-component]
+(defn- middleware-comment-entry [handler-component]
   (comp wrap-params
         #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
@@ -136,5 +134,5 @@
    'comments/comment-entry comment-entry})
 
 (defn end-points->middlewares [handler-component]
-  {'comments/comment-list  (middleware-list handler-component)
-   'comments/comment-entry (middleware-entry handler-component)})
+  {'comments/comment-list  (middleware-comment-list handler-component)
+   'comments/comment-entry (middleware-comment-entry handler-component)})

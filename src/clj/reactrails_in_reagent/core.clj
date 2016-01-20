@@ -4,8 +4,6 @@
     [com.stuartsierra.component :as component])
   (:gen-class))
 
-
-
 (defn -main [& _]
   (let [conf (system/config)
         sys (system/make-system conf)]
