@@ -15,8 +15,8 @@
 
 
 (def end-points->handlers
-  {'index index
-   'miss-404 miss-404})
+  {:index index
+   :miss-404 miss-404})
 
 (defn end-points->middlewares [_]
   {})

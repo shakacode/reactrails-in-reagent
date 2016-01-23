@@ -39,7 +39,7 @@
 (def comment-coercer (coerce/coercer schemas/Comment comment-matcher))
 (def comment-list-coercer (coerce/coercer schemas/Comment-list comment-matcher))
 
-(def comment-list-route (routes/path-for 'comments/comment-list))
+(def comment-list-route (routes/path-for :comments/comment-list))
 
 
 (defn send-new-comment! [comment handler & [error-handler]]

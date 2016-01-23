@@ -2,8 +2,6 @@
   (:require
     [reactrails-in-reagent.comment :as comments]
     [reactrails-in-reagent.routes :refer [routes]]
-    [bidi.bidi :as bidi]
-    [schema.core :as s]
     [schema.coerce :as coerce]
     [reactrails-in-reagent.comment.schemas :as schemas]
     [reactrails-in-reagent.system-test :as sys]
@@ -57,7 +55,7 @@
 
 (defn add-comment! [app comment]
   (-> (peridot/session app)
-      (peridot/request (bidi/path-for routes 'comments/comment-list)
+      (peridot/request (routes/path-for :comments/comment-list)
                        :request-method :post
                        :content-type "application/json"
                        :body (clj-map->JSON comment))))
@@ -101,7 +99,7 @@
 
 (defn test-fetching-one-comment [app id comment]
   (let [c (-> (peridot/session app)
-              (peridot/request (bidi/path-for routes 'comments/comment-entry :id id))
+              (peridot/request (routes/path-for :comments/comment-entry :id id))
               :response
               :body)
         coerced (comment-coercer c)]
@@ -112,7 +110,7 @@
 
 (defn test-fetching-non-existant-comment [app]
   (let [res (-> (peridot/session app)
-                (peridot/request (bidi/path-for routes 'comments/comment-entry :id 1)))]
+                (peridot/request (routes/path-for :comments/comment-entry :id 1)))]
     (given res
            [:response :status] := 404)))
 
@@ -139,7 +137,7 @@
 
 (defn test-fetching-all-comments [app]
   (let [cs (-> (peridot/session app)
-               (peridot/request (routes/path-for 'comments/comment-list))
+               (peridot/request (routes/path-for :comments/comment-list))
                :response
                :body)
         cs' (comment-list-coercer cs)

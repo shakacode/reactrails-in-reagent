@@ -71,7 +71,7 @@
 
 (defn post-redirection [ctx]
   (let [id (::id ctx)
-        location (routes/path-for 'comments/comment-entry :id id)]
+        location (routes/path-for :comments/comment-entry :id id)]
     {:location location}))
 
 (def comment-list
@@ -130,9 +130,9 @@
 
 
 (def end-points->handlers
-  {'comments/comment-list comment-list
-   'comments/comment-entry comment-entry})
+  {:comments/comment-list comment-list
+   :comments/comment-entry comment-entry})
 
 (defn end-points->middlewares [handler-component]
-  {'comments/comment-list  (middleware-comment-list handler-component)
-   'comments/comment-entry (middleware-comment-entry handler-component)})
+  {:comments/comment-list  (middleware-comment-list handler-component)
+   :comments/comment-entry (middleware-comment-entry handler-component)})
