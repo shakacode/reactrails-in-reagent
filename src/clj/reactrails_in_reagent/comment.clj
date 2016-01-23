@@ -76,7 +76,7 @@
 
 (def comment-list
   (resource {:available-media-types ["application/json"]
-             :allowed-methods [:post :get]
+             :allowed-methods [:post :get :head]
              :malformed? malformed-comment-list-params?
              :handle-ok response-comment-list
              :post! post-comment!
