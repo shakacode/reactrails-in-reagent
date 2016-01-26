@@ -12,8 +12,6 @@
     [dev.system :as dev]))
 
 
-
-
 (def config {:db-uri        "datomic:mem://example"
              :schema        (read-edn-ressource "data/schema.edn")
              :seed-data     (read-edn-ressource "data/seed.edn")
@@ -24,8 +22,6 @@
                              handler-prod/end-points->handlers
                              handler-prod/end-points->middlewares
                              prod/middleware]})
-
-
 
 (defn make-system-map [config]
   (component/system-map

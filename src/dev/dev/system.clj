@@ -27,20 +27,22 @@
         #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
 
 (defn config []
-  (-> (system/config)
-      (assoc
-        :seed-data (read-edn-ressource "data/seed.edn")
-        :handler-config [routes middleware])))
+  (assoc (system/config)
+    :seed-data (read-edn-ressource "data/seed.edn")
+    :handler-config [routes middleware]))
 
 ;; TODO See if there is a way to use suspendable to recompute the handle
 
-(defn make-system-map [config]
-  (-> system/system-map
-      (assoc :seeder
-             #(datomic/make-seeder (:seed-data %))
+(def system-map
+  (assoc system/system-map
+    :seeder
+    #(datomic/make-seeder (:seed-data %))
 
-             :web-request-handler
-             #(apply handler/make-dev-handler (:handler-config %)))
+    :web-request-handler
+    #(apply handler/make-dev-handler (:handler-config %))))
+
+(defn make-system-map [config]
+  (-> system-map
       (system/apply-config config)
       (component/map->SystemMap)))
 
@@ -50,6 +52,6 @@
              :schema-installer :schema-installer}))
 
 (defn make-system [config]
-  (-> (make-system-map config)
-      (component/system-using (dependency-map))))
+  (component/system-using (make-system-map config)
+                          (dependency-map)))
 

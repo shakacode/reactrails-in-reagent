@@ -71,7 +71,6 @@
 
 ;; ---------------------------------------------------------------------------
 
-
 (defrecord DatomicDeleter [uri]
   component/Lifecycle
   (start [component] component)
