@@ -38,5 +38,8 @@
   (stop)
   (start-figwheel! "dev")
   (start-figwheel! "devcards")
+  (fig-api/clean-builds "devcards")
+  (fig-api/cljs-repl)
+
 
   )

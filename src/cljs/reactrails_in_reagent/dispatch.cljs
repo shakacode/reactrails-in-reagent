@@ -24,56 +24,64 @@
                   "Returns a set of channels that will feed the dispatch loop."))
 
 
-(def ^:private !dispatch-state (atom {:channels #{}
-                                      :dispatch-channel nil}))
+(def initial-dispatch-state {:channels #{}
+                             :dispatch-channel nil})
 
+(defonce ^:private !dispatch-state (atom initial-dispatch-state))
 
-
-(defn- refresh-state [state chan]
+(defn- fresh-state [state chan]
   (let [{:keys [channels dispatch-channel]} state
         channels (-> channels
                      (disj dispatch-channel)
                      (conj chan))]
+    (when dispatch-channel
+      (async/close! dispatch-channel))
     {:channels channels
      :dispatch-channel chan}))
 
-(defn- remove-closed-channel! [c]
+(defn- remove-closed-channel! [!dispatch-state c]
   (swap! !dispatch-state update :channels #(disj % c)))
 
 (defn- apply-message-consequence! [!app-db m]
   (swap! !app-db apply-action m))
 
-(defn- add-event-source! [source]
+(defn- add-event-source! [!dispatch-state source]
   (swap! !dispatch-state update :channels #(set/union % (watch-channels source))))
 
 
 ;; TODO refactor in a way that we can pass the dispatch loop's state as a parameter.
-(defn start-dispatcher! [!app-db]
-  (let [dispatch-c (async/chan)]
+(defn start-dispatcher!
+  ([!app-db]
+    (start-dispatcher! !app-db !dispatch-state))
+  ([!app-db !dispatch-state]
+    (let [dispatch-c (async/chan)]
 
-    ; set up dispatch state
-    (swap! !dispatch-state refresh-state dispatch-c)
+      ; set up dispatch state
+      (swap! !dispatch-state fresh-state dispatch-c)
 
-    ; start dispatch loop
-    (go-loop
-      []
-      (when-let [channels (-> !dispatch-state deref :channels seq)]
+      ; start dispatch loop
+      (go-loop
+        []
+        (when-let [channels (-> !dispatch-state deref :channels seq)]
 
-        (let [[message channel] (async/alts! channels)]
-          (when (nil? message)
-            (remove-closed-channel! channel))
+          (let [[message channel] (async/alts! channels)]
+            (when (nil? message)
+              (remove-closed-channel! !dispatch-state channel))
 
-          (when (satisfies? Action message)
-            (apply-message-consequence! !app-db message))
+            (when (satisfies? Action message)
+              (apply-message-consequence! !app-db message))
 
-          (when (satisfies? EventSource message)
-            (add-event-source! message)))
-        (recur)))))
+            (when (satisfies? EventSource message)
+              (add-event-source! !dispatch-state message)))
+          (recur))))))
 
 
-(defn dispatch! [message]
-  (println "dispatching: " message)
-  (async/put! (:dispatch-channel @!dispatch-state) message))
+(defn dispatch!
+  ([message]
+   (dispatch! !dispatch-state message))
+  ([!dispatch-state message]
+   (println "dispatching: " message)
+   (async/put! (:dispatch-channel @!dispatch-state) message)))
 
 
 

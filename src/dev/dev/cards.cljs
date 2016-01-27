@@ -4,7 +4,8 @@
     [reactrails-in-reagent.views :as views]
     [reactrails-in-reagent.actions :as actions]
 
-    [reactrails-in-reagent.actions-test])
+    [reactrails-in-reagent.actions-test]
+    [reactrails-in-reagent.dispatch-test])
   (:require-macros
     [devcards.core :as dc :refer [defcard defcard-doc]]))
 
@@ -41,7 +42,7 @@
 
   "
   and the submit function:"
-  (dc/mkdn-pprint-source views/submit)
+  (dc/mkdn-pprint-source views/submit-fn)
 
   "
   ### Actions & EventSources
@@ -66,4 +67,9 @@
   (dc/mkdn-pprint-source dispatch/EventSource)
 
   "Here is the implementation of the action dispatched by a form view:"
-  (dc/mkdn-pprint-source actions/NewComment))
+  (dc/mkdn-pprint-source actions/NewComment)
+
+  "In this case the event loop will store `channel-res`in a set of pending channels.
+  The event source also executes a http call to the server and the result will be put `channel-res`,
+  int the form of a `reactrails-in-reagent.actions/ReceivedComment`."
+  )
