@@ -19,7 +19,7 @@
 
 (def empty-comment-set (sorted-set-by compare-comments))
 
-(def initial-state {:nav/index 0
+(def initial-state {:nav/index :horizontal
                     :comments empty-comment-set})
 
 (defonce app-state (r/atom initial-state))

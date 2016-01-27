@@ -20,10 +20,10 @@
 
   "We can for instance apply the action of changing the way the form is displayed"
   (dc/mkdn-pprint-code
-    '(dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle 1)))
+    '(dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked)))
 
   "and get the new value for the app state:"
-  (dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle 1))
+  (dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked))
 
   "## Tests"
   )
@@ -33,13 +33,13 @@
   of the global state."
 
   (testing "At initialisation the nan/index is 0"
-    (is (= 0 (:nav/index rinr-core/initial-state))))
+    (is (= :horizontal (:nav/index rinr-core/initial-state))))
 
   (testing "We can apply actions that change the :nav/index"
-    (is (= 1 (:nav/index (apply-action rinr-core/initial-state (actions/->SelectFormStyle 1)))))
-    (is (= 2 (:nav/index (reduce apply-action rinr-core/initial-state
-                                 [(actions/->SelectFormStyle 1)
-                                  (actions/->SelectFormStyle 2)]))))))
+    (is (= :stacked (:nav/index (apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked)))))
+    (is (= :inline (:nav/index (reduce apply-action rinr-core/initial-state
+                                 [(actions/->SelectFormStyle :stacked)
+                                  (actions/->SelectFormStyle :inline)]))))))
 
 
 (def comments
