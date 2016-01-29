@@ -53,7 +53,7 @@
 ;; **
 
 ;; @@
-(hello-handler "whatever the http request")
+(hello-handler "whatever the http request is")
 ;; @@
 ;; =>
 ;;; {"type":"list-like","open":"<span class='clj-map'>{</span>","close":"<span class='clj-map'>}</span>","separator":", ","items":[{"type":"list-like","open":"","close":"","separator":" ","items":[{"type":"html","content":"<span class='clj-keyword'>:status</span>","value":":status"},{"type":"html","content":"<span class='clj-long'>200</span>","value":"200"}],"value":"[:status 200]"},{"type":"list-like","open":"","close":"","separator":" ","items":[{"type":"html","content":"<span class='clj-keyword'>:body</span>","value":":body"},{"type":"html","content":"<span class='clj-string'>&quot;Hello world&quot;</span>","value":"\"Hello world\""}],"value":"[:body \"Hello world\"]"},{"type":"list-like","open":"","close":"","separator":" ","items":[{"type":"html","content":"<span class='clj-keyword'>:headers</span>","value":":headers"},{"type":"list-like","open":"<span class='clj-map'>{</span>","close":"<span class='clj-map'>}</span>","separator":", ","items":[{"type":"list-like","open":"","close":"","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;Content-Type&quot;</span>","value":"\"Content-Type\""},{"type":"html","content":"<span class='clj-string'>&quot;text/plain&quot;</span>","value":"\"text/plain\""}],"value":"[\"Content-Type\" \"text/plain\"]"}],"value":"{\"Content-Type\" \"text/plain\"}"}],"value":"[:headers {\"Content-Type\" \"text/plain\"}]"}],"value":"{:status 200, :body \"Hello world\", :headers {\"Content-Type\" \"text/plain\"}}"}
@@ -100,13 +100,12 @@ mock-request
 ;; <=
 
 ;; **
-;;; Note that we can test our web app without ever starting a web server, we can just create mock requests and pass them to our handler to see the results of a http call.
+;;; Note that we can test our web app without ever starting a web server, we can just create mock requests and pass them to our handlers to see the results of a http call.
 ;; **
 
 ;; **
 ;;; ### Ring Middleware
-;;; With ring comes the notion of middlewares. Middlewares are function that encapsulate functionnality that we want to reuse on multiple handlers. These 
-;;; middlewares are higher order function that take a ring handler and return a new ring handler.
+;;; With ring comes the notion of middlewares. Middlewares are functions that encapsulate functionnality that we want to reuse on multiple handlers. These middlewares are higher order function that take a ring handler and return a new ring handler.
 ;;; 
 ;;; In the case of our `echo-handler` we might want to decouple the coercion of the response body into a string by using a middleware.
 ;; **
@@ -352,7 +351,7 @@ mock-request
 (inject-handlers routes endpoint->handler)
 ;; @@
 ;; =>
-;;; {"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;&quot;</span>","value":"\"\""},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;/hello&quot;</span>","value":"\"/hello\""},{"type":"html","content":"<span class='clj-unkown'>#object[ring_bidi$hello_handler 0x319cbf24 &quot;ring_bidi$hello_handler@319cbf24&quot;]</span>","value":"#object[ring_bidi$hello_handler 0x319cbf24 \"ring_bidi$hello_handler@319cbf24\"]"}],"value":"[\"/hello\" #object[ring_bidi$hello_handler 0x319cbf24 \"ring_bidi$hello_handler@319cbf24\"]]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;/echo&quot;</span>","value":"\"/echo\""},{"type":"html","content":"<span class='clj-unkown'>#object[ring_bidi$echo_handler 0x618b6aa4 &quot;ring_bidi$echo_handler@618b6aa4&quot;]</span>","value":"#object[ring_bidi$echo_handler 0x618b6aa4 \"ring_bidi$echo_handler@618b6aa4\"]"}],"value":"[\"/echo\" #object[ring_bidi$echo_handler 0x618b6aa4 \"ring_bidi$echo_handler@618b6aa4\"]]"}],"value":"[[\"/hello\" #object[ring_bidi$hello_handler 0x319cbf24 \"ring_bidi$hello_handler@319cbf24\"]] [\"/echo\" #object[ring_bidi$echo_handler 0x618b6aa4 \"ring_bidi$echo_handler@618b6aa4\"]]]"}],"value":"[\"\" [[\"/hello\" #object[ring_bidi$hello_handler 0x319cbf24 \"ring_bidi$hello_handler@319cbf24\"]] [\"/echo\" #object[ring_bidi$echo_handler 0x618b6aa4 \"ring_bidi$echo_handler@618b6aa4\"]]]]"}
+;;; {"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;&quot;</span>","value":"\"\""},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;/hello&quot;</span>","value":"\"/hello\""},{"type":"html","content":"<span class='clj-unkown'>#object[ring_bidi$hello_handler 0x4eeab918 &quot;ring_bidi$hello_handler@4eeab918&quot;]</span>","value":"#object[ring_bidi$hello_handler 0x4eeab918 \"ring_bidi$hello_handler@4eeab918\"]"}],"value":"[\"/hello\" #object[ring_bidi$hello_handler 0x4eeab918 \"ring_bidi$hello_handler@4eeab918\"]]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-string'>&quot;/echo&quot;</span>","value":"\"/echo\""},{"type":"html","content":"<span class='clj-unkown'>#object[ring_bidi$echo_handler 0x56f517c6 &quot;ring_bidi$echo_handler@56f517c6&quot;]</span>","value":"#object[ring_bidi$echo_handler 0x56f517c6 \"ring_bidi$echo_handler@56f517c6\"]"}],"value":"[\"/echo\" #object[ring_bidi$echo_handler 0x56f517c6 \"ring_bidi$echo_handler@56f517c6\"]]"}],"value":"[[\"/hello\" #object[ring_bidi$hello_handler 0x4eeab918 \"ring_bidi$hello_handler@4eeab918\"]] [\"/echo\" #object[ring_bidi$echo_handler 0x56f517c6 \"ring_bidi$echo_handler@56f517c6\"]]]"}],"value":"[\"\" [[\"/hello\" #object[ring_bidi$hello_handler 0x4eeab918 \"ring_bidi$hello_handler@4eeab918\"]] [\"/echo\" #object[ring_bidi$echo_handler 0x56f517c6 \"ring_bidi$echo_handler@56f517c6\"]]]]"}
 ;; <=
 
 ;; **
@@ -390,8 +389,7 @@ mock-request
 ;; **
 ;;; ## Liberator
 ;;; 
-;;; In `reactrails-in-reagent` we use [liberator](http://clojure-liberator.github.io/liberator/) to generate handlers for 
-;;; the differents http resources the app serves. This library helps us define these resources in a clean manners taking care for us of the intricacies that come with building REST services.
+;;; In `reactrails-in-reagent` we use [liberator](http://clojure-liberator.github.io/liberator/) to generate handlers for the differents http resources the app serves. This library helps us define these resources in a clean manners taking care for us of the intricacies that come with building REST services.
 ;;; 
 ;;; We can define our `hello-handler` as a http resources using [liberator](http://clojure-liberator.github.io/liberator/) `resource` function:
 ;; **
@@ -473,7 +471,7 @@ mock-request
 ;; <=
 
 ;; **
-;;; Since we haven't specified what HTTP methods are allowed on our `hello-resource` [liberator](http://clojure-liberator.github.io/liberator/) allows only GET and HEAD. As we can see, tring to POST results in a `405 Method not allowed` response. For more information on the decisions in which we can hook see [this page](http://clojure-liberator.github.io/liberator/doc/decisions.html). To see what decision are made when see [the decision graph page](http://clojure-liberator.github.io/liberator/tutorial/decision-graph.html).
+;;; Since we haven't specified what HTTP methods are allowed on our `hello-resource` [liberator](http://clojure-liberator.github.io/liberator/) allows only GET and HEAD. As we can see, tring to POST results in a `405 Method not allowed` response. For more information on the decisions in which we can hook see [this page](http://clojure-liberator.github.io/liberator/doc/decisions.html). To see in what order decisions are made see [the decision graph page](http://clojure-liberator.github.io/liberator/tutorial/decision-graph.html).
 ;; **
 
 ;; **
@@ -617,7 +615,7 @@ mock-request
 ;; ->
 ;;; (def comment-list
 ;;;   (resource {:available-media-types [&quot;application/json&quot;]
-;;;              :allowed-methods [:post :get]
+;;;              :allowed-methods [:post :get :head]
 ;;;              :malformed? malformed-comment-list-params?
 ;;;              :handle-ok response-comment-list
 ;;;              :post! post-comment!
@@ -629,7 +627,7 @@ mock-request
 ;; <=
 
 ;; **
-;;; We're routed to that resource with the uri:
+;;; We arrive at that resource with the uri:
 ;; **
 
 ;; @@
@@ -640,7 +638,7 @@ mock-request
 ;; <=
 
 ;; **
-;;; A bit more of the [liberator](http://clojure-liberator.github.io/liberator/) decisions are used in this resource. POST requests being allowed with `:allowed-methods [:post :get]`, the side effects of such a request are defined with `:post! post-comment!`.
+;;; A bit more of the [liberator](http://clojure-liberator.github.io/liberator/) decisions are used in this resource. POST requests being allowed with `:allowed-methods [:post :get :head]`, the side effects of such a request are defined with `:post! post-comment!`.
 ;;; 
 ;; **
 
@@ -758,8 +756,8 @@ mock-request
 ;; @@
 ;; ->
 ;;; (defn inject-handlers [routes endpoints-&gt;handler]
-;;;   &quot;Walks the routes datastructure and replaces endpoints names (symbols) with
-;;;   the actual handlers for the endpoints.&quot;
+;;;   &quot;Walks the `routes` datastructure and replaces endpoints names with
+;;;   the actual handlers for the endpoints as defined in the mapping `endpoints-&gt;handler`.&quot;
 ;;;   (s/transform endpoints-path
 ;;;                (fn [v] (get endpoints-&gt;handler v v))
 ;;;                routes))
@@ -779,5 +777,5 @@ mock-request
 ;;; 
 ;;; The [yada](https://github.com/juxt/yada) library is an interesting new contender in the same space as [liberator](http://clojure-liberator.github.io/liberator/). In the newest releases [yada](https://github.com/juxt/yada)'s api seems to be similar to [liberator](http://clojure-liberator.github.io/liberator/)'s. It lets us define http resources as a clojure maps. We could even imagine possible to develop data transformations to convert [liberator](http://clojure-liberator.github.io/liberator/) resources into [yada](https://github.com/juxt/yada) ones. The library also seems to provide easy intragration with [swagger](http://swagger.io). It allows for full asynchronicity in the execution of the different decisions by using the [Aleph](http://aleph.io) server and the [manifold](https://github.com/ztellman/manifold) library which are fantastic technologies. [Yada](https://github.com/juxt/yada) is in my opinion, worth investigating as soon as its api stabilizes.
 ;;; 
-;;; Middlewares are, I think, really important to grasp when working with clojure. They are widely used in web development but not only. The more and more popular clojure build tool [Boot](http://boot-clj.com) relies on [middlewares to implement build pipelines](https://github.com/boot-clj/boot/wiki/Tasks). Finally [Clojure 1.7 transducers](http://clojure.org/reference/transducers) could be argued to be middlewares for reducing functions, emphasizing againg the need for a good understanding of the concept.
+;;; Middlewares are, I think, a really important concept to grasp when working with clojure. They are widely used in web development but not only. The more and more popular clojure build tool [Boot](http://boot-clj.com) relies on [middlewares to implement build pipelines](https://github.com/boot-clj/boot/wiki/Tasks). Finally [Clojure 1.7 transducers](http://clojure.org/reference/transducers) could be argued to be middlewares for reducing functions, emphasizing againg the need for a good understanding of the concept.
 ;; **

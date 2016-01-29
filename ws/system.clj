@@ -13,12 +13,12 @@
 ;;; 
 ;;; *Components* will handle the lifecycle of a single piece of state. We will for instance use a component to hold a database connection or an instance of a webserver. 
 ;;; 
-;;; *Systems* are a combination of components and possible dependencies between them. We can for instance make a system of a database component and a webserver component, declaring that the webserver depends on the database. This way we ensures we have a db connection before starting serving web request.
+;;; *Systems* are a combination of components and possible dependencies between them. We can for instance make a system of a database component and a webserver component, declaring that the webserver depends on the database. This way we ensure that we have a db connection before starting serving web request.
 ;;; 
 ;;; By *lifecycle* and more percisely the lifecycle of something, we simply mean that our components and systems can be started and stopped. 
 ;;; When starting, a databse component will create a connection, a webserver will start listening to a port and serving requests, a system will start each of it's composing components following dependencies between them.
 ;;; 
-;;; The `reactrails-in-reagent` project makes a good example of the use of components. [Component](https://github.com/stuartsierra/component) is at the core of its execution.
+;;; The `reactrails-in-reagent` project is a good example of the use of components. [Component](https://github.com/stuartsierra/component) is at the core of its execution.
 ;; **
 
 ;; @@
@@ -176,7 +176,7 @@
 ;; <=
 
 ;; **
-;;; [Component](https://github.com/stuartsierra/component)'s `SystemMap` implements the `Lifecycle` protocol in such a way that the starting order of components is determined by component dependencies. We can see for instance that the `:schema-installer` component depends on the `:db` component. Thus the `:db` will be started before the `:schema-installer` and once started the `:db` component will be `assoc`ed to the `:schema-installer` component before being started itself. When the system is stopped using the `component/stop` function, the components of the system are stop in the reverse of the staring order.
+;;; [Component](https://github.com/stuartsierra/component)'s `SystemMap` implements the `Lifecycle` protocol in such a way that the starting order of components is determined by component dependencies. We can see for instance that the `:schema-installer` component depends on the `:db` component. Thus the `:db` will be started before the `:schema-installer` and once started the `:db` component will be `assoc`ed to the `:schema-installer` component before being started itself. When the system is stopped using the `component/stop` function, the components of the system are stop in the reverse of the starting order.
 ;; **
 
 ;; **
@@ -252,7 +252,7 @@
 ;; <=
 
 ;; **
-;;; - `middleware-association`: a function returning a map specifying which particular middleware to apply to which handler in `handlers`, in the `reactrails-in-reagent.comment` namespace we find:
+;;; - `middleware-association`: a function returning a map specifying which particular middleware to apply to which handler in `handlers`. We can for instance find in the `reactrails-in-reagent.comment` namespace:
 ;; **
 
 ;; @@
@@ -269,11 +269,11 @@
 ;; <=
 
 ;; **
-;;; Note that this middleware mapping comes from a function and isn't directly a static map. Some middleware will need state such as the database connection, which is available at runtime, not compile time. This is actually why the handler component in our system depend on the database component.
+;;; Note that this middleware mapping comes from a function and isn't directly a static map. Some middleware will need state such as the database connection. This state is only available at runtime, not compile time. This is actually why the handler component in our system depend on the database component.
 ;; **
 
 ;; **
-;;; - `general middleware`: the middleware from which all web requests must pass regardless of the route.
+;;; - `general middleware`: the middleware from which all web requests must pass through regardless of the route.
 ;; **
 
 ;; **
@@ -290,7 +290,7 @@
 ;; **
 ;;; #### The dev handler
 ;;; 
-;;; The handler component found in the `dev.handler` namespace owes its existence to a trick clojure developpers use when working on a ring app in a REPL. The trick is to pass to the web server a clojure `Var`  pointing to the handler instead of the handler itself. This way when the `Var` pointing to the handler is redefined in the repl, the new definition is automatically used by the server, no need to restart it to see the change.
+;;; The handler component found in the `dev.handler` namespace owes its existence to a trick clojure developpers use when working on a ring app in a REPL. The trick is to pass to the web server a clojure `Var`  pointing to the handler instead of the handler itself. This way when the `Var` pointing to the handler is redefined in the repl, the new definition is automatically used by the server, no need restart needed to see the change.
 ;;; 
 ;;; Since we are in a repl let's see how it works. Note that `#'` is a clojure reader macro for the special form `var` and so `#'a-var` is turned by the clojure reader into `(var a-var)`.
 ;;; 
@@ -429,7 +429,7 @@
 ;; <=
 
 ;; **
-;;; Thus every time the second server is called, the mechanism of retrieving the value bounded to `#'hello-handler` is executed, yielding the latest binding every time.
+;;; Thus every time the second server is called, the mechanism of retrieving the value bounded to `#'hello-handler` is executed, yielding the latest binding.
 ;;; 
 ;;; We now add headers:
 ;; **
@@ -535,7 +535,7 @@
 ;; **
 ;;; ## The other systems
 ;;; 
-;;; Since systems are just data we can replace part of our production system to meet the need of different execution context. 
+;;; Since systems are just data we can replace part of our production system to suit the need of different execution context. 
 ;;; 
 ;;; In `reactrails-in-reeagent` we use two other systems than the one used in production:
 ;;; 
