@@ -24,7 +24,9 @@
         #(wrap-trace % :header :ui)
         wrap-json-params
         wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
+        #(wrap-assoc-request % :conn (-> handler-component
+                                         :database
+                                         :connection))))
 
 (defn config []
   (assoc (system/config)
@@ -54,4 +56,3 @@
 (defn make-system [config]
   (component/system-using (make-system-map config)
                           (dependency-map)))
-

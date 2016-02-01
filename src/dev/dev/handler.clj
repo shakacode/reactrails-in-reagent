@@ -41,5 +41,3 @@
 
 (defn make-dev-handler [routes-def general-middleware]
   (DevHandler. routes-def general-middleware))
-
-

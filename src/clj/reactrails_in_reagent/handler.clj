@@ -10,10 +10,12 @@
 
 
 ;; Patching liberator to use cheshire
-(defmethod liberator.representation/render-map-generic "application/json" [data _]
+(defmethod liberator.representation/render-map-generic "application/json"
+  [data _]
   (generate-string data))
 
-(defmethod liberator.representation/render-seq-generic "application/json" [data _]
+(defmethod liberator.representation/render-seq-generic "application/json"
+  [data _]
   (generate-string data))
 
 
@@ -71,11 +73,10 @@
       :handler handler'
       :started? true)))
 
-(defrecord Handler
-  [routes-definition        ; bidi routes data-structure
-   handlers                 ; map of endpoint-names -> handlers
-   middelware-associations  ; function that given the component returns a map of endpoint-names -> middleware
-   general-middleware]      ; top middleware used on every http call
+(defrecord Handler [routes-definition
+                    handlers
+                    middelware-associations
+                    general-middleware]
   component/Lifecycle
   (start [component]
     (if (:started? component)
@@ -85,5 +86,9 @@
     (println "Stoping handler")
     (dissoc component :handler :started?)))
 
-(defn make-handler [routes-definition handlers middleware-association general-middleware]
-  (Handler. routes-definition handlers middleware-association general-middleware))
+(defn make-handler [routes-definition
+                    handlers
+                    middleware-association
+                    general-middleware]
+  (Handler. routes-definition handlers
+            middleware-association general-middleware))

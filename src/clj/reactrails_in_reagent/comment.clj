@@ -6,7 +6,8 @@
     [liberator.core :refer [resource]]
     [datomic.api :as d]
     [reactrails-in-reagent.routes :as routes]
-    [reactrails-in-reagent.comment.schemas :refer [New-comment long-schema long-coercion ]]
+    [reactrails-in-reagent.comment.schemas
+     :refer [New-comment long-schema long-coercion ]]
     [reactrails-in-reagent.handler.middleware :refer [wrap-assoc-request]]
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.json :refer [wrap-json-params]]))
@@ -122,11 +123,15 @@
 (defn- middleware-comment-list [handler-component]
   (comp wrap-json-params
         wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
+        #(wrap-assoc-request % :conn (-> handler-component
+                                         :database
+                                         :connection))))
 
 (defn- middleware-comment-entry [handler-component]
   (comp wrap-params
-        #(wrap-assoc-request % :conn (-> handler-component :database :connection))))
+        #(wrap-assoc-request % :conn (-> handler-component
+                                         :database
+                                         :connection))))
 
 
 (def end-points->handlers

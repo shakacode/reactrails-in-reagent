@@ -12,18 +12,21 @@
 
   ## Overview
   We test here the different actions that can happen in the app.
-  Each action in the app is a record in `reactrails-in-reagent.actions` and implements
-  `reactrails-in-reagent.dispatch/Action`.
+  Each action in the app is a record in `reactrails-in-reagent.actions`
+  and implements `reactrails-in-reagent.dispatch/Action`.
 
   At the start the app has the following state:"
   rinr-core/initial-state
 
-  "We can for instance apply the action of changing the way the form is displayed"
+  "We can for instance apply the action of changing the way the form is
+  displayed"
   (dc/mkdn-pprint-code
-    '(dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked)))
+    '(dispatch/apply-action rinr-core/initial-state
+                            (actions/->SelectFormStyle :stacked)))
 
   "and get the new value for the app state:"
-  (dispatch/apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked))
+  (dispatch/apply-action rinr-core/initial-state
+                         (actions/->SelectFormStyle :stacked))
 
   "## Tests"
   )
@@ -36,10 +39,14 @@
     (is (= :horizontal (:nav/index rinr-core/initial-state))))
 
   (testing "We can apply actions that change the :nav/index"
-    (is (= :stacked (:nav/index (apply-action rinr-core/initial-state (actions/->SelectFormStyle :stacked)))))
-    (is (= :inline (:nav/index (reduce apply-action rinr-core/initial-state
-                                 [(actions/->SelectFormStyle :stacked)
-                                  (actions/->SelectFormStyle :inline)]))))))
+    (is (= :stacked
+           (:nav/index (apply-action rinr-core/initial-state
+                                     (actions/->SelectFormStyle :stacked)))))
+    (is (= :inline
+           (:nav/index (reduce apply-action
+                               rinr-core/initial-state
+                               [(actions/->SelectFormStyle :stacked)
+                                (actions/->SelectFormStyle :inline)]))))))
 
 
 (def comments
@@ -111,10 +118,11 @@
 
 
 (deftest race-conditions
-  "We need to make sure the ordering of the processing of events doesn't lead us to an unexpected state.
-  If the client issues a request to get all comments then posts a new one, the app will process one
-  `->ReceivedAllComment` action and one `->ReceivedNewComment` action. The ordering of the processing should not
-  have any influence on the result."
+  "We need to make sure the ordering of the processing of events doesn't
+  lead us to an unexpected state. If the client issues a request to get
+  all comments then posts a new one, the app will process one
+  `->ReceivedAllComment` action and one `->ReceivedNewComment` action.
+  The ordering of the processing should not have any influence on the result."
 
   (is (= (-> rinr-core/initial-state
              (apply-action (actions/->ReceivedAllComments (vals comments)))

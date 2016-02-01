@@ -36,6 +36,7 @@
    (defn parse-long [s]
      (Long/parseLong s)))
 
-(def long-coercion #?(:clj (coerce/first-matcher [#(try-apply long %) #(try-apply parse-long %)])
-                      :cljs js/Number))
-
+(def long-coercion
+  #?(:clj (coerce/first-matcher [#(try-apply long %)
+                                 #(try-apply parse-long %)])
+     :cljs js/Number))

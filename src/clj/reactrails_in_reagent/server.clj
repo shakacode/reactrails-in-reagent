@@ -41,8 +41,3 @@
     (make-web-server {}))
   ([options]
     (WebServer. options)))
-
-
-
-
-

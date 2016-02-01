@@ -89,17 +89,22 @@
         app-prod (handler-prod)]
 
     (testing "with wrong comment"
-      (testing "with dev handler"  (test-adding-malformed app-dev))
-      (testing "with prod handler" (test-adding-malformed app-prod)))
+      (testing "with dev handler"
+        (test-adding-malformed app-dev))
+      (testing "with prod handler"
+        (test-adding-malformed app-prod)))
 
     (testing "with well formed comments"
-      (testing "with dev handler" (test-adding-wellformed app-dev comment1))
-      (testing "with prod handler" (test-adding-wellformed app-prod comment2)))))
+      (testing "with dev handler"
+        (test-adding-wellformed app-dev comment1))
+      (testing "with prod handler"
+        (test-adding-wellformed app-prod comment2)))))
 
 
 (defn test-fetching-one-comment [app id comment]
   (let [c (-> (peridot/session app)
-              (peridot/request (routes/path-for :comments/comment-entry :id id))
+              (peridot/request
+                (routes/path-for :comments/comment-entry :id id))
               :response
               :body)
         coerced (comment-coercer c)]
@@ -110,7 +115,8 @@
 
 (defn test-fetching-non-existant-comment [app]
   (let [res (-> (peridot/session app)
-                (peridot/request (routes/path-for :comments/comment-entry :id 1)))]
+                (peridot/request
+                  (routes/path-for :comments/comment-entry :id 1)))]
     (given res
            [:response :status] := 404)))
 
@@ -159,6 +165,7 @@
 (deftest fetching-all-comments
   (comments/transact-new-comment (conn) comment1)
   (comments/transact-new-comment (conn) comment2)
-  (testing "with dev handler" (test-fetching-all-comments (handler-dev)))
-  (testing "with prod handler" (test-fetching-all-comments (handler-prod))))
-
+  (testing "with dev handler"
+    (test-fetching-all-comments (handler-dev)))
+  (testing "with prod handler"
+    (test-fetching-all-comments (handler-prod))))

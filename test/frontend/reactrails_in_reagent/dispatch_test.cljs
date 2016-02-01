@@ -30,7 +30,8 @@
 
   "The `start-dispatcher` fn has in fact two purposes:
 
-  It initializes some dispatch state the loop will need, possibly from a previous one.
+  It initializes some dispatch state the loop will need, possibly from a
+  previous state.
   This is done by swapping on the !dispatch-state atom with:
   ```clojure
   (swap! !dispatch-state fresh-state dispatch-c)
@@ -42,8 +43,8 @@
   "
   It starts a core.async go loop that handles events. This loop does 4 things:
 
-  - First: recovers the channels to listen to. If there aren't any stop looping, if there are select one
-  and perfom an iteration
+  - First: recovers the channels to listen to. If there aren't any stop looping,
+  if there are select one and perfom an iteration
     ```clojure
     (when-let [channels (-> !dispatch-state deref :channels seq)]
       (let [[message channel] (async/alts! channels)]
@@ -51,18 +52,21 @@
       ...
       (recur))
     ```
-  - Second: if the selected channel is closed remove it from the pool of pending ones
+  - Second: if the selected channel is closed remove it from the pool of
+  pending ones
   ```clojure
   (when (nil? message)
-    (remove-closed-channel! !dispatch-state channel))\n
+    (remove-closed-channel! !dispatch-state channel))
   ```
-  - Third: if the message is implements the `Action` protocol apply the action to the app state
+  - Third: if the message is implements the `Action` protocol apply the action
+  to the app state
   ```clojure
   (when (satisfies? Action message)
     (apply-message-consequence! !app-db message))
   ```
-  - Fourth: If the event implements the `EventSource` protocol recovers the channels from this event source
-  and place them with the rest of the pending channels
+  - Fourth: If the event implements the `EventSource` protocol recovers the
+  channels from this event source and place them with the rest of the pending
+  channels
   ```clojure
   (when (satisfies? EventSource message)
     (add-event-source! !dispatch-state message))
@@ -74,8 +78,8 @@
   "Dispatching an action doesn't make it execute right away, the first
   test should show no change, the second executed asynchronously should
   see the change."
-   (let [app-state (atom (assoc core/initial-state :test true))
-         dispatch-state (atom (assoc dispatch/initial-dispatch-state :test true))
+   (let [app-state (atom core/initial-state)
+         dispatch-state (atom dispatch/initial-dispatch-state)
          changed (async/chan)]
      (dispatch/start-dispatcher! app-state dispatch-state)
      (add-watch app-state :test
@@ -103,8 +107,8 @@
   2. once we've `put!` an action in our `pending-channel`
   this action is properly executed
   3. `pending-channel` is removed from the dispatch state when closed"
-  (let [app-state (atom (assoc core/initial-state ::test true))
-        dispatch-state (atom (assoc dispatch/initial-dispatch-state ::test true))
+  (let [app-state (atom core/initial-state)
+        dispatch-state (atom dispatch/initial-dispatch-state)
         app-state-changed (async/chan)
         dispatch-state-changed (async/chan)
         pending-channel (async/chan)]

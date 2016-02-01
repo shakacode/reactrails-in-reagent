@@ -58,6 +58,3 @@
 (defn make-system [config]
   (component/system-using (make-system-map config)
                           (dependency-map)))
-
-
-
