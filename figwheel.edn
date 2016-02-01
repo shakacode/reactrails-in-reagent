@@ -1,0 +1,19 @@
+{
+ :css-dirs ["resources/public/css"]
+ :builds   [{:id           "dev"
+             :source-paths ["src/cljs" "src/cljc"]
+             :figwheel     {:on-jsload "reactrails-in-reagent.core/on-js-reload"}
+             :compiler     {:main                 "reactrails-in-reagent.core"
+                            :asset-path           "js/compiled/out"
+                            :output-to            "resources/public/js/main.js"
+                            :output-dir           "resources/public/js/compiled/out"
+                            :source-map-timestamp true}}
+            {:id           "devcards"
+             :source-paths ["src/cljs" "src/cljc" "src/dev" "test/frontend"]
+             :figwheel     {:devcards true}
+             :compiler     {:main                 "dev.cards"
+                            :asset-path           "js/compiled/devcards_out"
+                            :output-to            "resources/public/js/compiled/cards.js"
+                            :output-dir           "resources/public/js/compiled/devcards_out"
+                            :source-map-timestamp true}}]
+ }

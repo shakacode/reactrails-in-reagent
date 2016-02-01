@@ -1,0 +1,16 @@
+[{:comment/author "Jeremy",
+  :comment/text "1",
+  :comment/created #inst"2015-12-15T15:34:38.567-00:00",
+  :db/id #db/id[:db.part/user]}
+ {:comment/author "Hervé",
+  :comment/text "1",
+  :comment/created #inst"2015-12-15T15:34:38.567-00:00",
+  :db/id #db/id[:db.part/user]}
+ {:comment/author "Jeremy",
+  :comment/text "2",
+  :comment/created #inst"2015-12-15T15:34:38.567-00:00",
+  :db/id #db/id[:db.part/user]}
+ {:comment/author "Hervé",
+  :comment/text "1",
+  :comment/created #inst"2015-12-15T15:34:38.567-00:00",
+  :db/id #db/id[:db.part/user]}]

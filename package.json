@@ -1,0 +1,18 @@
+{
+  "name": "reactrails-in-reagent",
+  "dependencies": {
+    "fs-extra": "^0.26.4",
+    "marked": "0.3.5"
+  },
+  "scripts": {
+    "postinstall": "node script/install-jslibs.js",
+    "clean": "node script/uninstall-jslibs.js"
+  },
+  "devDependencies": {
+    "karma": "^0.13.19",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-cljs-test": "^0.1.0",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-safari-launcher": "^0.1.1"
+  }
+}
