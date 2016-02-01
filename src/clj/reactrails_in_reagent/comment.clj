@@ -30,9 +30,9 @@
 (defn get-all-comments [conn]
   (d/q all-comments (d/db conn)))
 
-(defn transact-new-comment [conn comment]
+(defn transact-new-comment [conn c]
   (let [t-id (d/tempid :db.part/user)
-        comment (assoc comment
+        comment (assoc c
                   :db/id t-id
                   :comment/created (java.util.Date.))
         result @(d/transact conn [comment])
