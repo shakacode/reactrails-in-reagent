@@ -119,12 +119,16 @@
         c-id (comments/transact-new-comment (conn) comment)]
 
     (testing "when the comment does exist"
-      (testing "with dev handler" (test-fetching-one-comment (handler-dev) c-id comment))
-      (testing "with prod handler" (test-fetching-one-comment (handler-prod) c-id comment))))
+      (testing "with dev handler"
+        (test-fetching-one-comment (handler-dev) c-id comment))
+      (testing "with prod handler"
+        (test-fetching-one-comment (handler-prod) c-id comment))))
 
   (testing "when the comment doesn't exist"
-    (testing "with dev handler") (test-fetching-non-existant-comment (handler-dev))
-    (testing "with dev handler") (test-fetching-non-existant-comment (handler-prod))))
+    (testing "with dev handler"
+      (test-fetching-non-existant-comment (handler-dev)))
+    (testing "with dev handler"
+      (test-fetching-non-existant-comment (handler-prod)))))
 
 
 (def comment-list-coercer
